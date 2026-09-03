@@ -1,160 +1,799 @@
 <!DOCTYPE html>
-<html><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ICT Backtest Logger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+<title>ICT Backtest Logger V2</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0d1117;color:#eee;font:14px Arial;padding:10px}h1{font-size:20px}h2{font-size:13px;color:#aaa}.box{background:#151c26;border:1px solid #293548;border-radius:12px;padding:12px;margin-bottom:10px}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}label{font-size:11px;color:#9aa8bb}input,select,textarea{width:100%;margin-top:4px;padding:10px;border-radius:8px;border:1px solid #344258;background:#0d131c;color:#fff}button{padding:11px;border:0;border-radius:8px;font-weight:bold;background:#2563eb;color:#fff;width:100%;margin-top:9px}.rr{font-size:20px;text-align:center;padding:10px;background:#0d131c;border-radius:8px;margin-top:9px}.trade{border-top:1px solid #293548;padding:9px 0}.win{color:#4ade80}.loss{color:#fb7185}.muted{color:#8290a3;font-size:11px}.stats{display:flex;gap:8px}.stat{flex:1;text-align:center;background:#0d131c;padding:9px;border-radius:8px}.stat b{font-size:17px;display:block}
-</style></head><body>
+*{box-sizing:border-box}
 
-<h1>📊 ICT Backtest Logger V1</h1>
+body{
+margin:0;
+background:#0d1117;
+color:#e6edf3;
+font-family:Arial,sans-serif;
+padding-bottom:30px
+}
 
-<div class="box">
-<h2>TRADE</h2>
-<div class="g">
-<label>Trade Date/Time
-<input id="dt" type="datetime-local"></label>
+header{
+background:#111827;
+border-bottom:1px solid #273447;
+padding:15px;
+position:sticky;
+top:0;
+z-index:5
+}
 
-<label>Symbol
-<input id="sym" placeholder="XAUUSD"></label>
+h1{
+font-size:19px;
+margin:0 0 3px
+}
 
-<label>Direction
-<select id="dir"><option>BUY</option><option>SELL</option></select></label>
+.subtitle{
+color:#8b98aa;
+font-size:11px
+}
 
-<label>Entry
-<input id="en" type="number" step="any"></label>
+main{
+max-width:700px;
+margin:auto;
+padding:10px
+}
 
-<label>Stop Loss
-<input id="sl" type="number" step="any"></label>
+.card{
+background:#151c26;
+border:1px solid #273447;
+border-radius:12px;
+padding:13px;
+margin-bottom:10px
+}
 
-<label>Take Profit
-<input id="tp" type="number" step="any"></label>
+h2{
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.7px;
+margin:0 0 11px;
+color:#c9d4e2
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px
+}
+
+label{
+font-size:11px;
+color:#91a0b4;
+display:flex;
+flex-direction:column;
+gap:5px
+}
+
+.wide{
+grid-column:1/-1
+}
+
+input,select,textarea{
+width:100%;
+background:#0d131c;
+color:#e6edf3;
+border:1px solid #344258;
+border-radius:8px;
+padding:10px;
+font-size:14px;
+min-height:40px
+}
+
+textarea{
+resize:vertical
+}
+
+.metrics{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:9px;
+margin-top:11px
+}
+
+.metric{
+background:#0d131c;
+border:1px solid #273447;
+border-radius:8px;
+padding:10px;
+text-align:center
+}
+
+.metric span{
+display:block;
+font-size:9px;
+color:#7f8da1;
+margin-bottom:4px
+}
+
+.metric b{
+font-size:17px
+}
+
+.open{
+color:#f4c95d
+}
+
+.win{
+color:#5ee18b
+}
+
+.loss{
+color:#ff7b89
+}
+
+.buttons{
+display:flex;
+gap:8px;
+margin-top:10px
+}
+
+button{
+border:0;
+border-radius:8px;
+padding:11px;
+font-weight:bold;
+font-size:13px;
+cursor:pointer
+}
+
+.primary{
+background:#2563eb;
+color:white;
+flex:1
+}
+
+.secondary{
+background:#263447;
+color:#dce6f2;
+flex:1
+}
+
+.danger{
+background:#351b20;
+color:#ffb4b4;
+width:100%
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:7px;
+margin-bottom:10px
+}
+
+.stat{
+background:#0d131c;
+border:1px solid #273447;
+border-radius:8px;
+padding:9px;
+text-align:center
+}
+
+.stat b{
+font-size:16px;
+display:block
+}
+
+.stat span{
+font-size:9px;
+color:#7f8da1
+}
+
+.trade{
+border-top:1px solid #273447;
+padding:10px 2px
+}
+
+.trade:first-child{
+border-top:0
+}
+
+.tradeTop{
+display:flex;
+justify-content:space-between
+}
+
+.tradeInfo{
+font-size:10px;
+color:#8190a4;
+margin-top:4px
+}
+
+.tradeContext{
+font-size:11px;
+color:#c3cedb;
+margin-top:5px
+}
+
+.tradeImg{
+margin-top:8px;
+max-width:100%;
+border-radius:8px;
+border:1px solid #344258;
+display:block
+}
+
+.empty{
+text-align:center;
+padding:15px;
+color:#77869a;
+font-size:12px
+}
+
+.previewBox{
+margin-top:8px;
+text-align:center
+}
+
+.previewBox img{
+max-width:100%;
+max-height:150px;
+border-radius:8px;
+border:1px dashed #344258
+}
+
+@media(max-width:430px){
+.grid{
+grid-template-columns:1fr 1fr
+}
+
+main{
+padding:8px
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>ICT Backtest Logger</h1>
+<div class="subtitle">Mobile V2 • Trade Journal + Screenshots</div>
+</header>
+
+<main>
+
+<!-- TRADE INFORMATION -->
+
+<section class="card">
+
+<h2>Trade Information</h2>
+
+<div class="grid">
+
+<label>
+Date / Time
+<input id="datetime" type="datetime-local">
+</label>
+
+<label>
+Symbol
+<input id="symbol" type="text" placeholder="XAUUSD">
+</label>
+
+<label>
+Direction
+<select id="direction">
+<option>BUY</option>
+<option>SELL</option>
+</select>
+</label>
+
+<label>
+Entry
+<input id="entry" type="number" step="any" inputmode="decimal">
+</label>
+
+<label>
+Stop Loss
+<input id="sl" type="number" step="any" inputmode="decimal">
+</label>
+
+<label>
+Take Profit
+<input id="tp" type="number" step="any" inputmode="decimal">
+</label>
+
 </div>
 
-<div class="rr">R:R: <b id="rr">—</b></div>
+<div class="metrics">
+
+<div class="metric">
+<span>R:R TARGET</span>
+<b id="rr">—</b>
 </div>
 
-<div class="box">
-<h2>ICT CONTEXT</h2>
-<div class="g">
+<div class="metric">
+<span>RESULT</span>
+<b id="result" class="open">OPEN</b>
+</div>
 
-<label>HTF Context
+</div>
+
+<div class="buttons">
+<button class="secondary" onclick="calculateRR()">
+CALCULATE R:R
+</button>
+
+<button class="primary" onclick="saveTrade()">
+SAVE TRADE
+</button>
+</div>
+
+</section>
+
+
+<!-- ICT CONTEXT -->
+
+<section class="card">
+
+<h2>ICT Context & Attachments</h2>
+
+<div class="grid">
+
+<label>
+HTF Context
 <select id="htf">
-<option>—</option><option>Bullish</option><option>Bearish</option>
-<option>Neutral</option><option>Bullish POI</option><option>Bearish POI</option>
-<option>Premium</option><option>Discount</option>
-</select></label>
+<option>—</option>
+<option>Bullish</option>
+<option>Bearish</option>
+<option>Neutral</option>
+<option>Bullish POI</option>
+<option>Bearish POI</option>
+<option>Premium</option>
+<option>Discount</option>
+</select>
+</label>
 
-<label>Killzone
-<select id="kz">
-<option>—</option><option>London</option><option>NY AM</option>
-<option>NY PM</option><option>Silver Bullet</option>
+
+<label>
+Killzone Window
+<select id="killzone">
+<option>—</option>
+<option>London</option>
+<option>New York AM</option>
+<option>New York PM</option>
+<option>Silver Bullet</option>
 <option>Outside Killzone</option>
-</select></label>
+</select>
+</label>
 
-<label>Liquidity Swept
-<select id="liq">
-<option>—</option><option>BSL</option><option>SSL</option>
-<option>PDH</option><option>PDL</option><option>Asian High</option>
-<option>Asian Low</option><option>Equal Highs</option><option>Equal Lows</option>
-<option>Internal Liquidity</option><option>External Liquidity</option>
+
+<label>
+Liquidity Swept
+<select id="liquidity">
+<option>—</option>
+<option>BSL</option>
+<option>SSL</option>
+<option>PDH</option>
+<option>PDL</option>
+<option>Asian High</option>
+<option>Asian Low</option>
+<option>Equal Highs</option>
+<option>Equal Lows</option>
+<option>Internal Liquidity</option>
+<option>External Liquidity</option>
 <option>None</option>
-</select></label>
+</select>
+</label>
 
-<label>Loss / Invalid Factor
-<select id="inv">
-<option>None</option><option>No HTF Alignment</option>
-<option>No Liquidity Sweep</option><option>Wrong Killzone</option>
-<option>Late Entry</option><option>Poor R:R</option>
-<option>No Confirmation</option><option>Entry Too Early</option>
-<option>Chased Price</option><option>Invalid Setup</option>
-<option>Execution Error</option><option>Other</option>
-</select></label>
+
+<label>
+Loss / Invalid Factor
+<select id="invalid">
+<option>None</option>
+<option>No HTF Alignment</option>
+<option>No Liquidity Sweep</option>
+<option>Wrong Killzone</option>
+<option>Late Entry</option>
+<option>Poor R:R</option>
+<option>No Confirmation</option>
+<option>Entry Too Early</option>
+<option>Chased Price</option>
+<option>Invalid Setup</option>
+<option>Execution Error</option>
+<option>Emotional / Discretionary</option>
+<option>Other</option>
+</select>
+</label>
+
+<label class="wide">
+Upload Screenshot
+<input id="imageFile" type="file" accept="image/*" onchange="previewSelectedImage()">
+</label>
+
+<label class="wide">
+Or Image / TradingView URL
+<input id="imageUrl" type="text" placeholder="https://www.tradingview.com/x/..." oninput="previewSelectedImage()">
+</label>
+
+<div class="wide previewBox" id="previewContainer" style="display:none;">
+<img id="imagePreview" src="" alt="Preview">
 </div>
 
-<label style="display:block;margin-top:8px">Notes
-<textarea id="note" rows="2"></textarea></label>
+<label class="wide">
+Notes
+<textarea id="notes" rows="3" placeholder="Optional notes about the setup..."></textarea>
+</label>
 
-<button onclick="save()">SAVE TRADE</button>
 </div>
 
-<div class="box">
-<h2>JOURNAL</h2>
+</section>
+
+
+<!-- JOURNAL -->
+
+<section class="card">
+
+<h2>Trade Journal</h2>
+
 <div class="stats">
-<div class="stat"><b id="total">0</b><small>TRADES</small></div>
-<div class="stat"><b id="wr">—</b><small>WIN RATE</small></div>
-<div class="stat"><b id="wins">0</b><small>WINS</small></div>
+
+<div class="stat">
+<b id="totalTrades">0</b>
+<span>TRADES</span>
 </div>
-<div id="list"></div>
-<button onclick="csv()">EXPORT CSV</button>
-<button onclick="clearAll()" style="background:#401b22">DELETE ALL</button>
+
+<div class="stat">
+<b id="winRate">—</b>
+<span>WIN RATE</span>
 </div>
+
+<div class="stat">
+<b id="wins">0</b>
+<span>WINS</span>
+</div>
+
+</div>
+
+<div id="tradeList"></div>
+
+<div class="buttons">
+
+<button class="secondary" onclick="exportCSV()">
+EXPORT CSV
+</button>
+
+</div>
+
+<div class="buttons">
+
+<button class="danger" onclick="deleteAllTrades()">
+DELETE ALL TRADES
+</button>
+
+</div>
+
+</section>
+
+</main>
+
 
 <script>
-const $=x=>document.getElementById(x);
-let T=JSON.parse(localStorage.T||"[]");
 
-function calc(){
- let e=+en.value,s=+sl.value,t=+tp.value,d=dir.value;
- if(![e,s,t].every(Number.isFinite))return null;
- let r=d=="BUY"?e-s:s-e;
- let p=d=="BUY"?t-e:e-t;
- if(r<=0||p<=0){rr.innerText="Invalid";return null}
- let x=p/r;rr.innerText="1:"+x.toFixed(2);return x
+/* =========================
+   ICT BACKTEST LOGGER V2
+   ========================= */
+
+let trades = JSON.parse(localStorage.getItem("ICT_BACKTEST_TRADES") || "[]");
+let currentBase64Image = "";
+
+/* AUTOMATIC DATE / TIME */
+function setAutomaticDateTime(){
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const localTime = new Date(now.getTime() - offset * 60000);
+  document.getElementById("datetime").value = localTime.toISOString().slice(0,16);
 }
 
-[en,sl,tp,dir].forEach(x=>x.oninput=calc);
+/* R:R CALCULATOR */
+function calculateRR(){
+  const entry = parseFloat(document.getElementById("entry").value);
+  const sl = parseFloat(document.getElementById("sl").value);
+  const tp = parseFloat(document.getElementById("tp").value);
+  const direction = document.getElementById("direction").value;
 
-function save(){
- let r=calc();
- if(r===null)return alert("Enter valid Entry, SL and TP.");
- if(!dt.value)return alert("Enter the TRADE'S actual historical date/time.");
- let result=prompt("Result: WIN or LOSS","WIN");
- if(!result)return;
- result=result.toUpperCase();
- if(result!="WIN"&&result!="LOSS")return alert("Use WIN or LOSS.");
+  if(!Number.isFinite(entry) || !Number.isFinite(sl) || !Number.isFinite(tp)){
+    document.getElementById("rr").textContent = "—";
+    return null;
+  }
 
- T.push({
- dt:dt.value,sym:sym.value,dir:dir.value,
- en:+en.value,sl:+sl.value,tp:+tp.value,rr:r,
- result:result,htf:htf.value,kz:kz.value,
- liq:liq.value,inv:inv.value,note:note.value
- });
- localStorage.T=JSON.stringify(T);
- render();
- alert("Trade saved");
+  let risk = (direction === "BUY") ? (entry - sl) : (sl - entry);
+  let reward = (direction === "BUY") ? (tp - entry) : (entry - tp);
+
+  if(risk <= 0 || reward <= 0){
+    document.getElementById("rr").textContent = "INVALID";
+    return null;
+  }
+
+  const rr = reward / risk;
+  document.getElementById("rr").textContent = "1:" + rr.toFixed(2);
+  return rr;
 }
 
-function render(){
- let w=T.filter(x=>x.result=="WIN").length;
- total.innerText=T.length;
- wins.innerText=w;
- wr.innerText=T.length?(w/T.length*100).toFixed(1)+"%":"—";
- list.innerHTML=T.slice().reverse().map(x=>
- `<div class="trade">
- <b>${x.sym||"—"} ${x.dir}</b>
- <b class="${x.result.toLowerCase()}"> ${x.result}</b>
- <div class="muted">${x.dt.replace("T"," ")} • R:R 1:${x.rr.toFixed(2)}</div>
- <div>${x.htf} • ${x.kz} • ${x.liq}</div>
- <div class="muted">${x.inv}</div>
- </div>`).join("")
+/* RESULT CALCULATOR */
+function determineResult(){
+  const entry = parseFloat(document.getElementById("entry").value);
+  const sl = parseFloat(document.getElementById("sl").value);
+  const tp = parseFloat(document.getElementById("tp").value);
+  const direction = document.getElementById("direction").value;
+
+  if(!Number.isFinite(entry) || !Number.isFinite(sl) || !Number.isFinite(tp)){
+    return "OPEN";
+  }
+
+  const finalPrice = prompt("Enter the final/replay price.\n\nExample: 3355.20\n\nCancel = OPEN");
+  if(finalPrice === null || finalPrice.trim() === ""){
+    return "OPEN";
+  }
+
+  const price = parseFloat(finalPrice);
+  if(!Number.isFinite(price)){
+    return "OPEN";
+  }
+
+  if(direction === "BUY"){
+    if(price >= tp) return "WIN";
+    if(price <= sl) return "LOSS";
+  }else{
+    if(price <= tp) return "WIN";
+    if(price >= sl) return "LOSS";
+  }
+
+  return "OPEN";
 }
 
-function csv(){
- if(!T.length)return alert("No trades.");
- let h="Date/Time,Symbol,Direction,Entry,SL,TP,RR,Result,HTF,Killzone,Liquidity,Invalid,Notes\n";
- let b=T.map(x=>[x.dt,x.sym,x.dir,x.en,x.sl,x.tp,x.rr,x.result,x.htf,x.kz,x.liq,x.inv,x.note]
- .map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
- let a=document.createElement("a");
- a.href=URL.createObjectURL(new Blob([h+b],{type:"text/csv"}));
- a.download="ICT_Backtest_Trades.csv";a.click()
+/* IMAGE PREVIEW & COMPRESSION */
+function previewSelectedImage(){
+  const fileInput = document.getElementById("imageFile");
+  const urlInput = document.getElementById("imageUrl").value.trim();
+  const previewBox = document.getElementById("previewContainer");
+  const previewImg = document.getElementById("imagePreview");
+
+  if(fileInput.files && fileInput.files[0]){
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+      // Compress image slightly to fit localStorage comfortably
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = function(){
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const maxWidth = 800; // max width for local storage optimization
+        const scale = maxWidth / img.width;
+        
+        if(scale < 1){
+          canvas.width = maxWidth;
+          canvas.height = img.height * scale;
+        }else{
+          canvas.width = img.width;
+          canvas.height = img.height;
+        }
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        currentBase64Image = canvas.toDataURL("image/jpeg", 0.7);
+        previewImg.src = currentBase64Image;
+        previewBox.style.display = "block";
+      };
+    };
+    reader.readAsDataURL(file);
+  } else if(urlInput !== ""){
+    currentBase64Image = urlInput;
+    previewImg.src = urlInput;
+    previewBox.style.display = "block";
+  } else {
+    currentBase64Image = "";
+    previewBox.style.display = "none";
+  }
 }
 
-function clearAll(){
- if(confirm("Delete ALL trades?")){
-  T=[];localStorage.T="[]";render()
- }
+/* SAVE TRADE */
+function saveTrade(){
+  const rr = calculateRR();
+
+  if(rr === null){
+    alert("Please enter a valid Entry, Stop Loss and Take Profit.");
+    return;
+  }
+
+  let result = document.getElementById("result").textContent;
+  if(result === "OPEN"){
+    result = determineResult();
+  }
+
+  const datetime = document.getElementById("datetime").value;
+
+  const trade = {
+    id: Date.now(),
+    datetime: datetime,
+    symbol: document.getElementById("symbol").value.trim(),
+    direction: document.getElementById("direction").value,
+    entry: parseFloat(document.getElementById("entry").value),
+    sl: parseFloat(document.getElementById("sl").value),
+    tp: parseFloat(document.getElementById("tp").value),
+    rr: rr,
+    result: result,
+    htf: document.getElementById("htf").value,
+    killzone: document.getElementById("killzone").value,
+    liquidity: document.getElementById("liquidity").value,
+    invalid: document.getElementById("invalid").value,
+    image: currentBase64Image,
+    notes: document.getElementById("notes").value.trim()
+  };
+
+  try {
+    trades.push(trade);
+    localStorage.setItem("ICT_BACKTEST_TRADES", JSON.stringify(trades));
+  } catch (e) {
+    alert("Storage limit reached! Try using URL links for images or clearing older trades.");
+    trades.pop();
+    return;
+  }
+
+  document.getElementById("result").textContent = result;
+  updateResultColor();
+  renderTrades();
+  clearInputs();
+
+  alert("Trade saved successfully with screenshot!");
 }
-render();
+
+/* RESULT COLOR */
+function updateResultColor(){
+  const element = document.getElementById("result");
+  element.className = "";
+  if(element.textContent === "WIN") element.classList.add("win");
+  else if(element.textContent === "LOSS") element.classList.add("loss");
+  else element.classList.add("open");
+}
+
+/* CLEAR INPUTS */
+function clearInputs(){
+  document.getElementById("notes").value = "";
+  document.getElementById("imageFile").value = "";
+  document.getElementById("imageUrl").value = "";
+  document.getElementById("previewContainer").style.display = "none";
+  currentBase64Image = "";
+}
+
+/* DISPLAY TRADES */
+function renderTrades(){
+  const list = document.getElementById("tradeList");
+  const total = trades.length;
+  const wins = trades.filter(trade => trade.result === "WIN").length;
+  const losses = trades.filter(trade => trade.result === "LOSS").length;
+
+  let winRate = "—";
+  if(wins + losses > 0){
+    winRate = ((wins / (wins + losses)) * 100).toFixed(1) + "%";
+  }
+
+  document.getElementById("totalTrades").textContent = total;
+  document.getElementById("wins").textContent = wins;
+  document.getElementById("winRate").textContent = winRate;
+
+  if(total === 0){
+    list.innerHTML = '<div class="empty">No trades recorded yet.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  const reversed = [...trades].reverse();
+
+  reversed.forEach(trade => {
+    const div = document.createElement("div");
+    div.className = "trade";
+
+    let resultClass = "open";
+    if(trade.result === "WIN") resultClass = "win";
+    if(trade.result === "LOSS") resultClass = "loss";
+
+    const date = new Date(trade.datetime).toLocaleString();
+
+    let imageHTML = "";
+    if(trade.image){
+      imageHTML = `<a href="${escapeHTML(trade.image)}" target="_blank">
+        <img class="tradeImg" src="${escapeHTML(trade.image)}" alt="Chart Setup">
+      </a>`;
+    }
+
+    div.innerHTML = `
+      <div class="tradeTop">
+        <b>${escapeHTML(trade.symbol || "—")} ${escapeHTML(trade.direction)}</b>
+        <b class="${resultClass}">${escapeHTML(trade.result)}</b>
+      </div>
+      <div class="tradeInfo">
+        ${date} • R:R 1:${Number(trade.rr).toFixed(2)} • Entry ${trade.entry} • SL ${trade.sl} • TP ${trade.tp}
+      </div>
+      <div class="tradeContext">
+        HTF: ${escapeHTML(trade.htf)} • KZ: ${escapeHTML(trade.killzone)} • Liq: ${escapeHTML(trade.liquidity)} • Invalid: ${escapeHTML(trade.invalid)}
+      </div>
+      ${trade.notes ? `<div class="tradeContext"><i>Notes: ${escapeHTML(trade.notes)}</i></div>` : ""}
+      ${imageHTML}
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+/* ESCAPE HTML */
+function escapeHTML(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+/* EXPORT CSV */
+function exportCSV(){
+  if(trades.length === 0){
+    alert("There are no trades to export.");
+    return;
+  }
+
+  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","liquidity","invalid","image","notes"];
+  let csv = columns.join(",") + "\n";
+
+  trades.forEach(trade => {
+    const row = columns.map(column => {
+      const value = trade[column] ?? "";
+      return '"' + String(value).replace(/"/g,'""') + '"';
+    });
+    csv += row.join(",") + "\n";
+  });
+
+  const blob = new Blob(["\ufeff" + csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "ICT_Backtest_Trades.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/* DELETE ALL */
+function deleteAllTrades(){
+  if(trades.length === 0){
+    alert("There are no trades to delete.");
+    return;
+  }
+
+  if(!confirm("Are you sure you want to delete ALL saved trades?")) return;
+
+  trades = [];
+  localStorage.setItem("ICT_BACKTEST_TRADES", "[]");
+  renderTrades();
+  alert("All trades deleted.");
+}
+
+/* AUTOMATIC R:R UPDATE */
+["entry","sl","tp","direction"].forEach(id => {
+  document.getElementById(id).addEventListener("input", function(){
+    calculateRR();
+    document.getElementById("result").textContent = "OPEN";
+    updateResultColor();
+  });
+});
+
+/* START */
+setAutomaticDateTime();
+renderTrades();
+
 </script>
-</body></html>
+
+</body>
+</html>
