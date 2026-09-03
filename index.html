@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICT Backtest Logger</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0d1117;color:#eee;font:14px Arial;padding:10px}h1{font-size:20px}h2{font-size:13px;color:#aaa}.box{background:#151c26;border:1px solid #293548;border-radius:12px;padding:12px;margin-bottom:10px}.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}label{font-size:11px;color:#9aa8bb}input,select,textarea{width:100%;margin-top:4px;padding:10px;border-radius:8px;border:1px solid #344258;background:#0d131c;color:#fff}button{padding:11px;border:0;border-radius:8px;font-weight:bold;background:#2563eb;color:#fff;width:100%;margin-top:9px}.rr{font-size:20px;text-align:center;padding:10px;background:#0d131c;border-radius:8px;margin-top:9px}.trade{border-top:1px solid #293548;padding:9px 0}.win{color:#4ade80}.loss{color:#fb7185}.muted{color:#8290a3;font-size:11px}.stats{display:flex;gap:8px}.stat{flex:1;text-align:center;background:#0d131c;padding:9px;border-radius:8px}.stat b{font-size:17px;display:block}
+</style></head><body>
+
+<h1>📊 ICT Backtest Logger V1</h1>
+
+<div class="box">
+<h2>TRADE</h2>
+<div class="g">
+<label>Trade Date/Time
+<input id="dt" type="datetime-local"></label>
+
+<label>Symbol
+<input id="sym" placeholder="XAUUSD"></label>
+
+<label>Direction
+<select id="dir"><option>BUY</option><option>SELL</option></select></label>
+
+<label>Entry
+<input id="en" type="number" step="any"></label>
+
+<label>Stop Loss
+<input id="sl" type="number" step="any"></label>
+
+<label>Take Profit
+<input id="tp" type="number" step="any"></label>
+</div>
+
+<div class="rr">R:R: <b id="rr">—</b></div>
+</div>
+
+<div class="box">
+<h2>ICT CONTEXT</h2>
+<div class="g">
+
+<label>HTF Context
+<select id="htf">
+<option>—</option><option>Bullish</option><option>Bearish</option>
+<option>Neutral</option><option>Bullish POI</option><option>Bearish POI</option>
+<option>Premium</option><option>Discount</option>
+</select></label>
+
+<label>Killzone
+<select id="kz">
+<option>—</option><option>London</option><option>NY AM</option>
+<option>NY PM</option><option>Silver Bullet</option>
+<option>Outside Killzone</option>
+</select></label>
+
+<label>Liquidity Swept
+<select id="liq">
+<option>—</option><option>BSL</option><option>SSL</option>
+<option>PDH</option><option>PDL</option><option>Asian High</option>
+<option>Asian Low</option><option>Equal Highs</option><option>Equal Lows</option>
+<option>Internal Liquidity</option><option>External Liquidity</option>
+<option>None</option>
+</select></label>
+
+<label>Loss / Invalid Factor
+<select id="inv">
+<option>None</option><option>No HTF Alignment</option>
+<option>No Liquidity Sweep</option><option>Wrong Killzone</option>
+<option>Late Entry</option><option>Poor R:R</option>
+<option>No Confirmation</option><option>Entry Too Early</option>
+<option>Chased Price</option><option>Invalid Setup</option>
+<option>Execution Error</option><option>Other</option>
+</select></label>
+</div>
+
+<label style="display:block;margin-top:8px">Notes
+<textarea id="note" rows="2"></textarea></label>
+
+<button onclick="save()">SAVE TRADE</button>
+</div>
+
+<div class="box">
+<h2>JOURNAL</h2>
+<div class="stats">
+<div class="stat"><b id="total">0</b><small>TRADES</small></div>
+<div class="stat"><b id="wr">—</b><small>WIN RATE</small></div>
+<div class="stat"><b id="wins">0</b><small>WINS</small></div>
+</div>
+<div id="list"></div>
+<button onclick="csv()">EXPORT CSV</button>
+<button onclick="clearAll()" style="background:#401b22">DELETE ALL</button>
+</div>
+
+<script>
+const $=x=>document.getElementById(x);
+let T=JSON.parse(localStorage.T||"[]");
+
+function calc(){
+ let e=+en.value,s=+sl.value,t=+tp.value,d=dir.value;
+ if(![e,s,t].every(Number.isFinite))return null;
+ let r=d=="BUY"?e-s:s-e;
+ let p=d=="BUY"?t-e:e-t;
+ if(r<=0||p<=0){rr.innerText="Invalid";return null}
+ let x=p/r;rr.innerText="1:"+x.toFixed(2);return x
+}
+
+[en,sl,tp,dir].forEach(x=>x.oninput=calc);
+
+function save(){
+ let r=calc();
+ if(r===null)return alert("Enter valid Entry, SL and TP.");
+ if(!dt.value)return alert("Enter the TRADE'S actual historical date/time.");
+ let result=prompt("Result: WIN or LOSS","WIN");
+ if(!result)return;
+ result=result.toUpperCase();
+ if(result!="WIN"&&result!="LOSS")return alert("Use WIN or LOSS.");
+
+ T.push({
+ dt:dt.value,sym:sym.value,dir:dir.value,
+ en:+en.value,sl:+sl.value,tp:+tp.value,rr:r,
+ result:result,htf:htf.value,kz:kz.value,
+ liq:liq.value,inv:inv.value,note:note.value
+ });
+ localStorage.T=JSON.stringify(T);
+ render();
+ alert("Trade saved");
+}
+
+function render(){
+ let w=T.filter(x=>x.result=="WIN").length;
+ total.innerText=T.length;
+ wins.innerText=w;
+ wr.innerText=T.length?(w/T.length*100).toFixed(1)+"%":"—";
+ list.innerHTML=T.slice().reverse().map(x=>
+ `<div class="trade">
+ <b>${x.sym||"—"} ${x.dir}</b>
+ <b class="${x.result.toLowerCase()}"> ${x.result}</b>
+ <div class="muted">${x.dt.replace("T"," ")} • R:R 1:${x.rr.toFixed(2)}</div>
+ <div>${x.htf} • ${x.kz} • ${x.liq}</div>
+ <div class="muted">${x.inv}</div>
+ </div>`).join("")
+}
+
+function csv(){
+ if(!T.length)return alert("No trades.");
+ let h="Date/Time,Symbol,Direction,Entry,SL,TP,RR,Result,HTF,Killzone,Liquidity,Invalid,Notes\n";
+ let b=T.map(x=>[x.dt,x.sym,x.dir,x.en,x.sl,x.tp,x.rr,x.result,x.htf,x.kz,x.liq,x.inv,x.note]
+ .map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+ let a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([h+b],{type:"text/csv"}));
+ a.download="ICT_Backtest_Trades.csv";a.click()
+}
+
+function clearAll(){
+ if(confirm("Delete ALL trades?")){
+  T=[];localStorage.T="[]";render()
+ }
+}
+render();
+</script>
+</body></html>
