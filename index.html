@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#0d1117">
-<title>ICT Backtest Logger V2.1</title>
+<title>ICT Backtest Logger V2.2</title>
 
 <style>
 *{box-sizing:border-box}
@@ -14,62 +14,64 @@ margin:0;
 background:#0d1117;
 color:#e6edf3;
 font-family:Arial,sans-serif;
-padding-bottom:30px
+padding-bottom:40px
 }
 
 header{
 background:#111827;
 border-bottom:1px solid #273447;
-padding:15px;
+padding:16px 20px;
 position:sticky;
 top:0;
-z-index:5
+z-index:10
 }
 
 h1{
-font-size:19px;
-margin:0 0 3px
+font-size:20px;
+margin:0 0 4px
 }
 
 .subtitle{
 color:#8b98aa;
-font-size:11px
+font-size:12px
 }
 
 main{
-max-width:700px;
+max-width:720px;
 margin:auto;
-padding:10px
+padding:14px
 }
 
 .card{
 background:#151c26;
 border:1px solid #273447;
 border-radius:12px;
-padding:13px;
-margin-bottom:10px
+padding:18px;
+margin-bottom:14px
 }
 
 h2{
-font-size:12px;
+font-size:13px;
 text-transform:uppercase;
-letter-spacing:.7px;
-margin:0 0 11px;
-color:#c9d4e2
+letter-spacing:.8px;
+margin:0 0 14px;
+color:#c9d4e2;
+border-bottom:1px solid #232f3e;
+padding-bottom:6px
 }
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:9px
+gap:12px
 }
 
 label{
-font-size:11px;
+font-size:12px;
 color:#91a0b4;
 display:flex;
 flex-direction:column;
-gap:5px
+gap:6px
 }
 
 .wide{
@@ -82,98 +84,107 @@ background:#0d131c;
 color:#e6edf3;
 border:1px solid #344258;
 border-radius:8px;
-padding:10px;
+padding:11px;
 font-size:14px;
-min-height:40px
+min-height:42px
 }
 
 textarea{
 resize:vertical
 }
 
+/* Multi-select box styling */
+.checkboxGroup{
+background:#0d131c;
+border:1px solid #344258;
+border-radius:8px;
+padding:10px;
+max-height:140px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:8px
+}
+
+.checkboxItem{
+display:flex;
+align-items:center;
+gap:8px;
+font-size:12px;
+color:#dce6f2;
+cursor:pointer
+}
+
+.checkboxItem input[type="checkbox"]{
+width:16px;
+height:16px;
+min-height:auto;
+accent-color:#2563eb;
+cursor:pointer
+}
+
 .metrics{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:9px;
-margin-top:11px
+gap:12px;
+margin-top:14px
 }
 
 .metric{
 background:#0d131c;
 border:1px solid #273447;
 border-radius:8px;
-padding:10px;
+padding:12px;
 text-align:center
 }
 
 .metric span{
 display:block;
-font-size:9px;
+font-size:10px;
 color:#7f8da1;
 margin-bottom:4px
 }
 
 .metric b{
-font-size:17px
+font-size:18px
 }
 
-.open{
-color:#f4c95d
-}
-
-.win{
-color:#5ee18b
-}
-
-.loss{
-color:#ff7b89
-}
+.open{color:#f4c95d}
+.win{color:#5ee18b}
+.loss{color:#ff7b89}
+.be{color:#38bdf8}
 
 .buttons{
 display:flex;
-gap:8px;
-margin-top:10px
+gap:10px;
+margin-top:14px
 }
 
 button{
 border:0;
 border-radius:8px;
-padding:11px;
+padding:12px;
 font-weight:bold;
 font-size:13px;
 cursor:pointer
 }
 
-.primary{
-background:#2563eb;
-color:white;
-flex:1
-}
-
-.secondary{
-background:#263447;
-color:#dce6f2;
-flex:1
-}
-
-.danger{
-background:#351b20;
-color:#ffb4b4;
-width:100%
-}
+.primary{background:#2563eb;color:white;flex:1}
+.secondary{background:#263447;color:#dce6f2;flex:1}
+.danger{background:#351b20;color:#ffb4b4;width:100%}
 
 .stats{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:7px;
-margin-bottom:10px
+gap:8px;
+margin-bottom:12px
 }
 
 .stat{
 background:#0d131c;
 border:1px solid #273447;
 border-radius:8px;
-padding:9px;
+padding:10px;
 text-align:center
 }
 
@@ -183,46 +194,46 @@ display:block
 }
 
 .stat span{
-font-size:9px;
+font-size:10px;
 color:#7f8da1
 }
 
 .trade{
 border-top:1px solid #273447;
-padding:10px 2px
+padding:12px 2px
 }
 
-.trade:first-child{
-border-top:0
-}
+.trade:first-child{border-top:0}
 
 .tradeTop{
 display:flex;
-justify-content:space-between
+justify-content:space-between;
+align-items:center
 }
 
 .tradeInfo{
-font-size:10px;
+font-size:11px;
 color:#8190a4;
-margin-top:4px
+margin-top:5px
 }
 
 .tradeContext{
 font-size:11px;
 color:#c3cedb;
-margin-top:5px
+margin-top:6px;
+line-height:1.4
 }
 
 .imageGrid{
 display:grid;
 grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));
 gap:8px;
-margin-top:8px
+margin-top:10px
 }
 
 .tradeImg{
 width:100%;
-height:100px;
+height:110px;
 object-fit:cover;
 border-radius:8px;
 border:1px solid #344258;
@@ -231,7 +242,7 @@ display:block
 
 .empty{
 text-align:center;
-padding:15px;
+padding:18px;
 color:#77869a;
 font-size:12px
 }
@@ -259,18 +270,14 @@ gap:6px
 }
 
 .urlInputGroup button{
-padding:0 12px;
+padding:0 14px;
 white-space:nowrap
 }
 
-@media(max-width:430px){
-.grid{
-grid-template-columns:1fr 1fr
-}
-
-main{
-padding:8px
-}
+@media(max-width:480px){
+.grid{grid-template-columns:1fr}
+main{padding:10px}
+.card{padding:14px}
 }
 </style>
 </head>
@@ -279,7 +286,7 @@ padding:8px
 
 <header>
 <h1>ICT Backtest Logger</h1>
-<div class="subtitle">Mobile V2.1 • Multi-Image Trade Journal</div>
+<div class="subtitle">Mobile V2.2 • Multi-Selection & BE Supported</div>
 </header>
 
 <main>
@@ -299,7 +306,7 @@ Date / Time
 
 <label>
 Symbol
-<input id="symbol" type="text" placeholder="XAUUSD">
+<input id="symbol" type="text" value="EURUSD" placeholder="EURUSD">
 </label>
 
 <label>
@@ -376,7 +383,6 @@ HTF Context
 </select>
 </label>
 
-
 <label>
 Killzone Window
 <select id="killzone">
@@ -389,43 +395,37 @@ Killzone Window
 </select>
 </label>
 
-
-<label>
-Liquidity Swept
-<select id="liquidity">
-<option>—</option>
-<option>BSL</option>
-<option>SSL</option>
-<option>PDH</option>
-<option>PDL</option>
-<option>Asian High</option>
-<option>Asian Low</option>
-<option>Equal Highs</option>
-<option>Equal Lows</option>
-<option>Internal Liquidity</option>
-<option>External Liquidity</option>
-<option>None</option>
-</select>
+<label class="wide">
+Target Liquidity
+<input id="targetLiquidity" type="text" placeholder="e.g. Asian High, PDH, Equal Highs">
 </label>
 
+<label class="wide">
+Liquidity Swept (Select Multiple)
+<div class="checkboxGroup" id="liquidityGroup">
+  <label class="checkboxItem"><input type="checkbox" value="BSL"> BSL</label>
+  <label class="checkboxItem"><input type="checkbox" value="SSL"> SSL</label>
+  <label class="checkboxItem"><input type="checkbox" value="PDH"> PDH</label>
+  <label class="checkboxItem"><input type="checkbox" value="PDL"> PDL</label>
+  <label class="checkboxItem"><input type="checkbox" value="Asian High"> Asian High</label>
+  <label class="checkboxItem"><input type="checkbox" value="Asian Low"> Asian Low</label>
+  <label class="checkboxItem"><input type="checkbox" value="Equal Highs"> Equal Highs</label>
+  <label class="checkboxItem"><input type="checkbox" value="Equal Lows"> Equal Lows</label>
+  <label class="checkboxItem"><input type="checkbox" value="Internal Liquidity"> Internal Liquidity</label>
+  <label class="checkboxItem"><input type="checkbox" value="External Liquidity"> External Liquidity</label>
+</div>
+</label>
 
-<label>
-Loss / Invalid Factor
-<select id="invalid">
-<option>None</option>
-<option>No HTF Alignment</option>
-<option>No Liquidity Sweep</option>
-<option>Wrong Killzone</option>
-<option>Late Entry</option>
-<option>Poor R:R</option>
-<option>No Confirmation</option>
-<option>Entry Too Early</option>
-<option>Chased Price</option>
-<option>Invalid Setup</option>
-<option>Execution Error</option>
-<option>Emotional / Discretionary</option>
-<option>Other</option>
-</select>
+<label class="wide">
+Loss / Invalidation Factors (Select Multiple)
+<div class="checkboxGroup" id="invalidGroup">
+  <label class="checkboxItem"><input type="checkbox" value="Against HTF trend"> Against HTF trend</label>
+  <label class="checkboxItem"><input type="checkbox" value="Early entry"> Early entry</label>
+  <label class="checkboxItem"><input type="checkbox" value="Reversal"> Reversal</label>
+  <label class="checkboxItem"><input type="checkbox" value="Engineered liquidity"> Engineered liquidity</label>
+  <label class="checkboxItem"><input type="checkbox" value="Trading to opposing PDA"> Trading to opposing PDA</label>
+  <label class="checkboxItem"><input type="checkbox" value="Went to TP"> Went to TP</label>
+</div>
 </label>
 
 <label class="wide">
@@ -473,7 +473,7 @@ Notes
 
 <div class="stat">
 <b id="wins">0</b>
-<span>WINS</span>
+<span>WINS / BE</span>
 </div>
 
 </div>
@@ -481,19 +481,11 @@ Notes
 <div id="tradeList"></div>
 
 <div class="buttons">
-
-<button class="secondary" onclick="exportCSV()">
-EXPORT CSV
-</button>
-
+<button class="secondary" onclick="exportCSV()">EXPORT CSV</button>
 </div>
 
 <div class="buttons">
-
-<button class="danger" onclick="deleteAllTrades()">
-DELETE ALL TRADES
-</button>
-
+<button class="danger" onclick="deleteAllTrades()">DELETE ALL TRADES</button>
 </div>
 
 </section>
@@ -504,7 +496,7 @@ DELETE ALL TRADES
 <script>
 
 /* =========================
-   ICT BACKTEST LOGGER V2.1
+   ICT BACKTEST LOGGER V2.2
    ========================= */
 
 let trades = JSON.parse(localStorage.getItem("ICT_BACKTEST_TRADES") || "[]");
@@ -543,7 +535,7 @@ function calculateRR(){
   return rr;
 }
 
-/* RESULT CALCULATOR */
+/* RESULT CALCULATOR (INCLUDES BE) */
 function determineResult(){
   const entry = parseFloat(document.getElementById("entry").value);
   const sl = parseFloat(document.getElementById("sl").value);
@@ -554,15 +546,22 @@ function determineResult(){
     return "OPEN";
   }
 
-  const finalPrice = prompt("Enter the final/replay price.\n\nExample: 3355.20\n\nCancel = OPEN");
+  const finalPrice = prompt("Enter final exit price (or type 'BE' for Break-Even / 0.00 USD):\n\nCancel = OPEN");
   if(finalPrice === null || finalPrice.trim() === ""){
     return "OPEN";
   }
 
-  const price = parseFloat(finalPrice);
+  const cleanInput = finalPrice.trim().toUpperCase();
+  if(cleanInput === "BE" || cleanInput === "0" || cleanInput === "0.00"){
+    return "BE";
+  }
+
+  const price = parseFloat(cleanInput);
   if(!Number.isFinite(price)){
     return "OPEN";
   }
+
+  if(price === entry) return "BE";
 
   if(direction === "BUY"){
     if(price >= tp) return "WIN";
@@ -573,6 +572,19 @@ function determineResult(){
   }
 
   return "OPEN";
+}
+
+/* HELPER FOR MULTI-CHECKBOX SELECTION */
+function getSelectedCheckboxes(containerId){
+  const container = document.getElementById(containerId);
+  const checked = container.querySelectorAll("input[type='checkbox']:checked");
+  return Array.from(checked).map(cb => cb.value);
+}
+
+function clearCheckboxes(containerId){
+  const container = document.getElementById(containerId);
+  const checked = container.querySelectorAll("input[type='checkbox']");
+  checked.forEach(cb => cb.checked = false);
 }
 
 /* MULTIPLE FILE HANDLER */
@@ -655,7 +667,7 @@ function saveTrade(){
   const trade = {
     id: Date.now(),
     datetime: datetime,
-    symbol: document.getElementById("symbol").value.trim(),
+    symbol: document.getElementById("symbol").value.trim() || "EURUSD",
     direction: document.getElementById("direction").value,
     entry: parseFloat(document.getElementById("entry").value),
     sl: parseFloat(document.getElementById("sl").value),
@@ -664,8 +676,9 @@ function saveTrade(){
     result: result,
     htf: document.getElementById("htf").value,
     killzone: document.getElementById("killzone").value,
-    liquidity: document.getElementById("liquidity").value,
-    invalid: document.getElementById("invalid").value,
+    targetLiquidity: document.getElementById("targetLiquidity").value.trim(),
+    liquidity: getSelectedCheckboxes("liquidityGroup"),
+    invalid: getSelectedCheckboxes("invalidGroup"),
     images: [...currentImages],
     notes: document.getElementById("notes").value.trim()
   };
@@ -693,15 +706,19 @@ function updateResultColor(){
   element.className = "";
   if(element.textContent === "WIN") element.classList.add("win");
   else if(element.textContent === "LOSS") element.classList.add("loss");
+  else if(element.textContent === "BE") element.classList.add("be");
   else element.classList.add("open");
 }
 
 /* CLEAR INPUTS */
 function clearInputs(){
   document.getElementById("notes").value = "";
+  document.getElementById("targetLiquidity").value = "";
   document.getElementById("imageFile").value = "";
   document.getElementById("imageUrl").value = "";
   document.getElementById("previewContainer").style.display = "none";
+  clearCheckboxes("liquidityGroup");
+  clearCheckboxes("invalidGroup");
   currentImages = [];
 }
 
@@ -711,6 +728,7 @@ function renderTrades(){
   const total = trades.length;
   const wins = trades.filter(trade => trade.result === "WIN").length;
   const losses = trades.filter(trade => trade.result === "LOSS").length;
+  const bes = trades.filter(trade => trade.result === "BE").length;
 
   let winRate = "—";
   if(wins + losses > 0){
@@ -718,7 +736,7 @@ function renderTrades(){
   }
 
   document.getElementById("totalTrades").textContent = total;
-  document.getElementById("wins").textContent = wins;
+  document.getElementById("wins").textContent = `${wins}W / ${bes}BE`;
   document.getElementById("winRate").textContent = winRate;
 
   if(total === 0){
@@ -736,6 +754,7 @@ function renderTrades(){
     let resultClass = "open";
     if(trade.result === "WIN") resultClass = "win";
     if(trade.result === "LOSS") resultClass = "loss";
+    if(trade.result === "BE") resultClass = "be";
 
     const date = new Date(trade.datetime).toLocaleString();
 
@@ -749,16 +768,22 @@ function renderTrades(){
       ).join('') + '</div>';
     }
 
+    const liqText = Array.isArray(trade.liquidity) ? trade.liquidity.join(", ") : (trade.liquidity || "—");
+    const invText = Array.isArray(trade.invalid) ? trade.invalid.join(", ") : (trade.invalid || "—");
+
     div.innerHTML = `
       <div class="tradeTop">
-        <b>${escapeHTML(trade.symbol || "—")} ${escapeHTML(trade.direction)}</b>
+        <b>${escapeHTML(trade.symbol || "EURUSD")} ${escapeHTML(trade.direction)}</b>
         <b class="${resultClass}">${escapeHTML(trade.result)}</b>
       </div>
       <div class="tradeInfo">
         ${date} • R:R 1:${Number(trade.rr).toFixed(2)} • Entry ${trade.entry} • SL ${trade.sl} • TP ${trade.tp}
       </div>
       <div class="tradeContext">
-        HTF: ${escapeHTML(trade.htf)} • KZ: ${escapeHTML(trade.killzone)} • Liq: ${escapeHTML(trade.liquidity)} • Invalid: ${escapeHTML(trade.invalid)}
+        <b>HTF:</b> ${escapeHTML(trade.htf)} • <b>KZ:</b> ${escapeHTML(trade.killzone)} <br>
+        <b>Target Liq:</b> ${escapeHTML(trade.targetLiquidity || "—")}<br>
+        <b>Swept:</b> ${escapeHTML(liqText || "None")} <br>
+        <b>Invalidation:</b> ${escapeHTML(invText || "None")}
       </div>
       ${trade.notes ? `<div class="tradeContext"><i>Notes: ${escapeHTML(trade.notes)}</i></div>` : ""}
       ${imageGridHTML}
@@ -785,7 +810,7 @@ function exportCSV(){
     return;
   }
 
-  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","liquidity","invalid","images","notes"];
+  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","targetLiquidity","liquidity","invalid","images","notes"];
   let csv = columns.join(",") + "\n";
 
   trades.forEach(trade => {
