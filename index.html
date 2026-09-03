@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#0d1117">
-<title>ICT Backtest Logger V2</title>
+<title>ICT Backtest Logger V2.1</title>
 
 <style>
 *{box-sizing:border-box}
@@ -213,9 +213,17 @@ color:#c3cedb;
 margin-top:5px
 }
 
+.imageGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));
+gap:8px;
+margin-top:8px
+}
+
 .tradeImg{
-margin-top:8px;
-max-width:100%;
+width:100%;
+height:100px;
+object-fit:cover;
 border-radius:8px;
 border:1px solid #344258;
 display:block
@@ -230,14 +238,29 @@ font-size:12px
 
 .previewBox{
 margin-top:8px;
-text-align:center
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding-bottom:5px
 }
 
 .previewBox img{
-max-width:100%;
-max-height:150px;
+width:100px;
+height:80px;
+object-fit:cover;
 border-radius:8px;
-border:1px dashed #344258
+border:1px dashed #344258;
+flex-shrink:0
+}
+
+.urlInputGroup{
+display:flex;
+gap:6px
+}
+
+.urlInputGroup button{
+padding:0 12px;
+white-space:nowrap
 }
 
 @media(max-width:430px){
@@ -256,7 +279,7 @@ padding:8px
 
 <header>
 <h1>ICT Backtest Logger</h1>
-<div class="subtitle">Mobile V2 • Trade Journal + Screenshots</div>
+<div class="subtitle">Mobile V2.1 • Multi-Image Trade Journal</div>
 </header>
 
 <main>
@@ -406,18 +429,19 @@ Loss / Invalid Factor
 </label>
 
 <label class="wide">
-Upload Screenshot
-<input id="imageFile" type="file" accept="image/*" onchange="previewSelectedImage()">
+Upload Screenshots (Select Multiple)
+<input id="imageFile" type="file" accept="image/*" multiple onchange="handleMultipleFiles(event)">
 </label>
 
 <label class="wide">
-Or Image / TradingView URL
-<input id="imageUrl" type="text" placeholder="https://www.tradingview.com/x/..." oninput="previewSelectedImage()">
+Add Image / TradingView Link
+<div class="urlInputGroup">
+  <input id="imageUrl" type="text" placeholder="https://www.tradingview.com/x/...">
+  <button class="secondary" type="button" onclick="addUrlImage()">ADD</button>
+</div>
 </label>
 
-<div class="wide previewBox" id="previewContainer" style="display:none;">
-<img id="imagePreview" src="" alt="Preview">
-</div>
+<div class="wide previewBox" id="previewContainer" style="display:none;"></div>
 
 <label class="wide">
 Notes
@@ -480,11 +504,11 @@ DELETE ALL TRADES
 <script>
 
 /* =========================
-   ICT BACKTEST LOGGER V2
+   ICT BACKTEST LOGGER V2.1
    ========================= */
 
 let trades = JSON.parse(localStorage.getItem("ICT_BACKTEST_TRADES") || "[]");
-let currentBase64Image = "";
+let currentImages = [];
 
 /* AUTOMATIC DATE / TIME */
 function setAutomaticDateTime(){
@@ -551,25 +575,20 @@ function determineResult(){
   return "OPEN";
 }
 
-/* IMAGE PREVIEW & COMPRESSION */
-function previewSelectedImage(){
-  const fileInput = document.getElementById("imageFile");
-  const urlInput = document.getElementById("imageUrl").value.trim();
-  const previewBox = document.getElementById("previewContainer");
-  const previewImg = document.getElementById("imagePreview");
+/* MULTIPLE FILE HANDLER */
+function handleMultipleFiles(event){
+  const files = event.target.files;
+  if(!files || files.length === 0) return;
 
-  if(fileInput.files && fileInput.files[0]){
-    const file = fileInput.files[0];
+  Array.from(files).forEach(file => {
     const reader = new FileReader();
-
     reader.onload = function(e){
-      // Compress image slightly to fit localStorage comfortably
       const img = new Image();
       img.src = e.target.result;
       img.onload = function(){
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        const maxWidth = 800; // max width for local storage optimization
+        const maxWidth = 700;
         const scale = maxWidth / img.width;
         
         if(scale < 1){
@@ -581,20 +600,40 @@ function previewSelectedImage(){
         }
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        currentBase64Image = canvas.toDataURL("image/jpeg", 0.7);
-        previewImg.src = currentBase64Image;
-        previewBox.style.display = "block";
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.65);
+        currentImages.push(compressedBase64);
+        renderPreviews();
       };
     };
     reader.readAsDataURL(file);
-  } else if(urlInput !== ""){
-    currentBase64Image = urlInput;
-    previewImg.src = urlInput;
-    previewBox.style.display = "block";
-  } else {
-    currentBase64Image = "";
-    previewBox.style.display = "none";
+  });
+}
+
+/* ADD URL IMAGE */
+function addUrlImage(){
+  const urlInput = document.getElementById("imageUrl");
+  const url = urlInput.value.trim();
+  if(url !== ""){
+    currentImages.push(url);
+    urlInput.value = "";
+    renderPreviews();
   }
+}
+
+/* RENDER PREVIEW BOX */
+function renderPreviews(){
+  const previewBox = document.getElementById("previewContainer");
+  previewBox.innerHTML = "";
+  if(currentImages.length === 0){
+    previewBox.style.display = "none";
+    return;
+  }
+  previewBox.style.display = "flex";
+  currentImages.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    previewBox.appendChild(img);
+  });
 }
 
 /* SAVE TRADE */
@@ -627,7 +666,7 @@ function saveTrade(){
     killzone: document.getElementById("killzone").value,
     liquidity: document.getElementById("liquidity").value,
     invalid: document.getElementById("invalid").value,
-    image: currentBase64Image,
+    images: [...currentImages],
     notes: document.getElementById("notes").value.trim()
   };
 
@@ -635,7 +674,7 @@ function saveTrade(){
     trades.push(trade);
     localStorage.setItem("ICT_BACKTEST_TRADES", JSON.stringify(trades));
   } catch (e) {
-    alert("Storage limit reached! Try using URL links for images or clearing older trades.");
+    alert("Storage limit reached! Try using TradingView links or deleting older trades.");
     trades.pop();
     return;
   }
@@ -645,7 +684,7 @@ function saveTrade(){
   renderTrades();
   clearInputs();
 
-  alert("Trade saved successfully with screenshot!");
+  alert("Trade saved successfully!");
 }
 
 /* RESULT COLOR */
@@ -663,7 +702,7 @@ function clearInputs(){
   document.getElementById("imageFile").value = "";
   document.getElementById("imageUrl").value = "";
   document.getElementById("previewContainer").style.display = "none";
-  currentBase64Image = "";
+  currentImages = [];
 }
 
 /* DISPLAY TRADES */
@@ -700,11 +739,14 @@ function renderTrades(){
 
     const date = new Date(trade.datetime).toLocaleString();
 
-    let imageHTML = "";
-    if(trade.image){
-      imageHTML = `<a href="${escapeHTML(trade.image)}" target="_blank">
-        <img class="tradeImg" src="${escapeHTML(trade.image)}" alt="Chart Setup">
-      </a>`;
+    let imageGridHTML = "";
+    const imgs = trade.images || (trade.image ? [trade.image] : []);
+    if(imgs.length > 0){
+      imageGridHTML = '<div class="imageGrid">' + imgs.map(imgSrc => 
+        `<a href="${escapeHTML(imgSrc)}" target="_blank">
+          <img class="tradeImg" src="${escapeHTML(imgSrc)}" alt="Chart Setup">
+        </a>`
+      ).join('') + '</div>';
     }
 
     div.innerHTML = `
@@ -719,7 +761,7 @@ function renderTrades(){
         HTF: ${escapeHTML(trade.htf)} • KZ: ${escapeHTML(trade.killzone)} • Liq: ${escapeHTML(trade.liquidity)} • Invalid: ${escapeHTML(trade.invalid)}
       </div>
       ${trade.notes ? `<div class="tradeContext"><i>Notes: ${escapeHTML(trade.notes)}</i></div>` : ""}
-      ${imageHTML}
+      ${imageGridHTML}
     `;
 
     list.appendChild(div);
@@ -743,12 +785,13 @@ function exportCSV(){
     return;
   }
 
-  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","liquidity","invalid","image","notes"];
+  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","liquidity","invalid","images","notes"];
   let csv = columns.join(",") + "\n";
 
   trades.forEach(trade => {
     const row = columns.map(column => {
-      const value = trade[column] ?? "";
+      let value = trade[column] ?? "";
+      if(Array.isArray(value)) value = value.join(" | ");
       return '"' + String(value).replace(/"/g,'""') + '"';
     });
     csv += row.join(",") + "\n";
