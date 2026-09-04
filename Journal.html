@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICT Journal Analytics</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d1117;color:#e6edf3;font-family:Inter,Arial,sans-serif}
+.wrap{max-width:1000px;margin:auto;padding:18px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+h1{margin:0;font-size:27px}
+.sub{color:#8b949e;font-size:13px;margin-top:5px}
+button{border:0;border-radius:11px;padding:11px 14px;background:#238636;color:#fff;font-weight:700}
+button.blue{background:#1f6feb}
+button.secondary{background:#21262d}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#161b22;border:1px solid #30363d;border-radius:15px;padding:15px}
+.stat small{display:block;color:#8b949e;font-size:12px}
+.stat strong{display:block;font-size:21px;margin-top:7px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:17px;padding:17px;margin-top:13px}
+.title{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#58a6ff;font-weight:700;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #30363d}
+th{color:#8b949e}
+.pos{color:#7ee787}
+.neg{color:#ff7b72}
+.chart{height:220px;display:flex;align-items:end;gap:5px;border-bottom:1px solid #30363d;padding:15px 5px 0}
+.bar{flex:1;min-width:3px;background:#1f6feb;border-radius:3px 3px 0 0}
+.empty{color:#8b949e;text-align:center;padding:30px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+select{background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:9px;padding:9px}
+@media(max-width:700px){
+.stats{grid-template-columns:repeat(2,1fr)}
+table{font-size:11px}
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+<div>
+<h1>📊 Journal Analytics</h1>
+<div class="sub">Your backtest performance at a glance.</div>
+</div>
+<div>
+<button class="blue" onclick="location.href='index.html'">← Logger</button>
+<button class="secondary" onclick="exportCSV()">Export CSV</button>
+</div>
+</header>
+
+<div class="stats">
+<div class="stat"><small>Trades</small><strong id="count">0</strong></div>
+<div class="stat"><small>Wins / Losses</small><strong id="wl">0 / 0</strong></div>
+<div class="stat"><small>Win Rate</small><strong id="winrate">0%</strong></div>
+<div class="stat"><small>Net P&L</small><strong id="net">$0</strong></div>
+<div class="stat"><small>Profit Factor</small><strong id="pf">—</strong></div>
+<div class="stat"><small>Expectancy</small><strong id="exp">—</strong></div>
+<div class="stat"><small>Average R:R</small><strong id="avgRR">—</strong></div>
+<div class="stat"><small>Max Drawdown</small><strong id="dd">$0</strong></div>
+</div>
+
+<div class="card">
+<div class="title">Performance Filters</div>
+
+<div class="filters">
+<select id="resultFilter">
+<option value="ALL">All Results</option>
+<option value="WIN">Wins</option>
+<option value="LOSS">Losses</option>
+<option value="BREAKEVEN">Breakeven</option>
+</select>
+
+<select id="pairFilter">
+<option value="ALL">All Instruments</option>
+</select>
+
+<select id="periodFilter">
+<option value="ALL">All Time</option>
+<option value="7">Last 7 Trades</option>
+<option value="30">Last 30 Trades</option>
+<option value="90">Last 90 Trades</option>
+</select>
+</div>
+</div>
+
+<div class="card">
+<div class="title">Equity Curve</div>
+<div id="chart" class="chart"></div>
+</div>
+
+<div class="card">
+<div class="title">Performance Breakdown</div>
+<div id="breakdown"></div>
+</div>
+
+<div class="card">
+<div class="title">Trade History</div>
+<div id="history"></div>
+</div>
+
+</div>
+
+<script>
+let trades=JSON.parse(localStorage.getItem("ictTrades")||"[]");
+
+const $=id=>document.getElementById(id);
+
+function money(v){
+return "$"+Number(v||0).toFixed(2);
+}
+
+function getFiltered(){
+let a=[...trades];
+
+const result=$("resultFilter").value;
+const pair=$("pairFilter").value;
+const period=$("periodFilter").value;
+
+if(result!=="ALL")a=a.filter(t=>t.result===result);
+if(pair!=="ALL")a=a.filter(t=>t.pair===pair);
+
+if(period!=="ALL"){
+a=a.slice(0,Number(period));
+}
+
+return a;
+}
+
+function metrics(a){
+const pnl=a.filter(t=>t.pnl!==null&&t.pnl!==undefined&&t.pnl!=="").map(t=>Number(t.pnl));
+
+const wins=pnl.filter(x=>x>0);
+const losses=pnl.filter(x=>x<0);
+
+const net=pnl.reduce((x,y)=>x+y,0);
+const grossWin=wins.reduce((x,y)=>x+y,0);
+const grossLoss=Math.abs(losses.reduce((x,y)=>x+y,0));
+
+const pf=grossLoss?grossWin/grossLoss:null;
+const expectancy=pnl.length?net/pnl.length:null;
+
+const rr=a.map(t=>Number(t.rr)).filter(x=>isFinite(x)&&x>0);
+const avgRR=rr.length?rr.reduce((x,y)=>x+y,0)/rr.length:null;
+
+let equity=0;
+let peak=0;
+let dd=0;
+
+pnl.slice().reverse().forEach(x=>{
+equity+=x;
+peak=Math.max(peak,equity);
+dd=Math.max(dd,peak-equity);
+});
+
+return {
+wins,
+losses,
+net,
+pf,
+expectancy,
+avgRR,
+dd,
+winrate:a.length?a.filter(t=>t.result==="WIN").length/a.length*100:0
+};
+}
+
+function renderStats(){
+const a=getFiltered();
+const m=metrics(a);
+
+$("count").textContent=a.length;
+$("wl").textContent=m.wins.length+" / "+m.losses.length;
+$("winrate").textContent=m.winrate.toFixed(1)+"%";
+$("net").textContent=money(m.net);
+$("net").className=m.net>0?"pos":m.net<0?"neg":"";
+$("pf").textContent=m.pf===null?"—":m.pf.toFixed(2);
+$("exp").textContent=m.expectancy===null?"—":money(m.expectancy);
+$("avgRR").textContent=m.avgRR===null?"—":"1:"+m.avgRR.toFixed(2);
+$("dd").textContent=money(m.dd);
+}
+
+function renderChart(){
+const a=getFiltered().slice().reverse();
+const chart=$("chart");
+
+if(!a.length){
+chart.innerHTML='<div class="empty">No P&L data yet.</div>';
+return;
+}
+
+let equity=0;
+const vals=a.map(t=>{
+equity+=Number(t.pnl||0);
+return equity;
+});
+
+const max=Math.max(...vals,0);
+const min=Math.min(...vals,0);
+const range=Math.max(1,max-min);
+
+chart.innerHTML=vals.map(v=>{
+let h=Math.max(5,Math.abs(v-min)/range*100);
+return `<div class="bar" style="height:${h}%"></div>`;
+}).join("");
+}
+
+function groupBy(a,key){
+const map={};
+
+a.forEach(t=>{
+const k=t[key]||"Unknown";
+if(!map[k])map[k]=[];
+map[k].push(t);
+});
+
+return map;
+}
+
+function renderBreakdown(){
+const a=getFiltered();
+
+if(!a.length){
+$("breakdown").innerHTML='<div class="empty">No trades to analyse.</div>';
+return;
+}
+
+const sections=[
+["Instrument","pair"],
+["Setup / Model","setup"],
+["Killzone","killzone"],
+["Liquidity Swept","liquidity"],
+["Invalidation","invalid"]
+];
+
+$("breakdown").innerHTML=sections.map(([title,key])=>{
+const groups=groupBy(a,key);
+
+return `
+<h3>${title}</h3>
+<table>
+<tr><th>Category</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Win Rate</th><th>P&L</th></tr>
+${Object.entries(groups).map(([name,list])=>{
+const wins=list.filter(t=>t.result==="WIN").length;
+const losses=list.filter(t=>t.result==="LOSS").length;
+const pnl=list.reduce((s,t)=>s+(t.pnl==null?0:Number(t.pnl)),0);
+const wr=list.length?wins/list.length*100:0;
+
+return `
+<tr>
+<td>${escapeHtml(name)}</td>
+<td>${list.length}</td>
+<td>${wins}</td>
+<td>${losses}</td>
+<td>${wr.toFixed(1)}%</td>
+<td class="${pnl>=0?"pos":"neg"}">${money(pnl)}</td>
+</tr>`;
+}).join("")}
+</table>`;
+}).join("");
+}
+
+function renderHistory(){
+const a=getFiltered();
+
+if(!a.length){
+$("history").innerHTML='<div class="empty">No trades yet.</div>';
+return;
+}
+
+$("history").innerHTML=`
+<table>
+<tr>
+<th>Date</th>
+<th>Pair</th>
+<th>Direction</th>
+<th>Result</th>
+<th>R:R</th>
+<th>P&L</th>
+</tr>
+${a.map(t=>`
+<tr>
+<td>${escapeHtml(t.datetime)}</td>
+<td>${escapeHtml(t.pair)}</td>
+<td>${escapeHtml(t.direction)}</td>
+<td>${escapeHtml(t.result)}</td>
+<td>${t.rr?"1:"+Number(t.rr).toFixed(2):"—"}</td>
+<td class="${Number(t.pnl||0)>=0?"pos":"neg"}">${t.pnl==null?"—":money(t.pnl)}</td>
+</tr>`).join("")}
+</table>`;
+}
+
+function escapeHtml(x){
+return String(x??"").replace(/[&<>"']/g,m=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+}[m]));
+}
+
+function loadPairs(){
+const pairs=[...new Set(trades.map(t=>t.pair).filter(Boolean))];
+
+$("pairFilter").innerHTML=
+'<option value="ALL">All Instruments</option>'+
+pairs.map(p=>`<option>${escapeHtml(p)}</option>`).join("");
+}
+
+function render(){
+renderStats();
+renderChart();
+renderBreakdown();
+renderHistory();
+}
+
+function exportCSV(){
+const a=getFiltered();
+
+const headers=[
+"Date/Time",
+"Pair",
+"Direction",
+"Entry",
+"SL",
+"TP",
+"R:R",
+"Result",
+"P&L",
+"HTF Context",
+"Killzone",
+"Liquidity Swept",
+"Setup",
+"Loss Category / Invalidation",
+"Notes"
+];
+
+const rows=a.map(t=>[
+t.datetime,t.pair,t.direction,t.entry,t.sl,t.tp,
+t.rr?Number(t.rr).toFixed(2):"",
+t.result,t.pnl??"",
+t.htf,t.killzone,t.liquidity,t.setup,t.invalid,t.notes
+]);
+
+const csv=[headers,...rows].map(row=>
+row.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")
+).join("\n");
+
+const blob=new Blob([csv],{type:"text/csv"});
+const url=URL.createObjectURL(blob);
+const aTag=document.createElement("a");
+
+aTag.href=url;
+aTag.download="ICT-Trading-Journal.csv";
+aTag.click();
+
+URL.revokeObjectURL(url);
+}
+
+$("resultFilter").onchange=render;
+$("pairFilter").onchange=render;
+$("periodFilter").onchange=render;
+
+loadPairs();
+render();
+</script>
+
+</body>
+</html>
