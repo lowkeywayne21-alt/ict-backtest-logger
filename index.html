@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0a0c10">
+<meta name="theme-color" content="#1e222b">
 <title>LOWKEY JOURNAL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-main: #0a0c10;
-  --bg-card: #12151c;
-  --bg-input: #06070a;
-  --border: rgba(255, 255, 255, 0.08);
+  --bg-main: #181b22;
+  --bg-card: #212631;
+  --bg-input: #14171d;
+  --border: rgba(255, 255, 255, 0.1);
   --border-focus: #38bdf8;
   --accent: #38bdf8;
   --green: #34d399;
   --red: #f87171;
   --amber: #fbbf24;
   --text-main: #f3f4f6;
-  --text-muted: #6b7280;
+  --text-muted: #9ca3af;
   --font-sans: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
@@ -36,7 +36,7 @@ body {
 
 /* NAVBAR */
 header {
-  background: rgba(10, 12, 16, 0.85);
+  background: rgba(33, 38, 49, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -102,6 +102,7 @@ main {
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .panel-title {
@@ -167,9 +168,9 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px;
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 8px;
-  max-height: 150px;
+  max-height: 160px;
   overflow-y: auto;
 }
 
@@ -182,7 +183,7 @@ input:focus, select:focus, textarea:focus {
   cursor: pointer;
   padding: 6px 8px;
   border-radius: 6px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.03);
 }
 
 .chip input[type="checkbox"] {
@@ -246,7 +247,7 @@ input:focus, select:focus, textarea:focus {
 .btn-primary:hover { opacity: 0.9; }
 .btn-secondary { background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
 .btn-secondary:hover { background: rgba(255,255,255,0.05); }
-.btn-danger { background: rgba(248, 113, 113, 0.1); color: var(--red); border: 1px solid var(--red); }
+.btn-danger { background: rgba(248, 113, 113, 0.12); color: var(--red); border: 1px solid var(--red); }
 
 /* LOG FEED */
 .trade-feed { display: flex; flex-direction: column; gap: 12px; }
@@ -277,10 +278,10 @@ input:focus, select:focus, textarea:focus {
   font-family: var(--font-mono);
 }
 
-.badge-WIN { background: rgba(52, 211, 153, 0.15); color: var(--green); }
-.badge-LOSS { background: rgba(248, 113, 113, 0.15); color: var(--red); }
-.badge-BE { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
-.badge-OPEN { background: rgba(107, 114, 128, 0.2); color: var(--text-muted); }
+.badge-WIN { background: rgba(52, 211, 153, 0.2); color: var(--green); }
+.badge-LOSS { background: rgba(248, 113, 113, 0.2); color: var(--red); }
+.badge-BE { background: rgba(251, 191, 36, 0.2); color: var(--amber); }
+.badge-OPEN { background: rgba(156, 163, 175, 0.2); color: var(--text-muted); }
 
 .feed-body { font-size: 12px; color: var(--text-muted); line-height: 1.6; font-family: var(--font-mono); }
 .feed-body b { color: var(--text-main); }
@@ -292,7 +293,7 @@ input:focus, select:focus, textarea:focus {
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.65);
   backdrop-filter: blur(4px);
   display: none;
   justify-content: center;
@@ -361,9 +362,9 @@ input:focus, select:focus, textarea:focus {
     </section>
 
     <section class="panel">
-      <div class="panel-title">Context & Attachments</div>
+      <div class="panel-title">ICT Context & Confluences</div>
       <div class="form-grid">
-        <label>Market Bias
+        <label>HTF Bias
           <select id="bias">
             <option>—</option>
             <option>Bullish</option>
@@ -372,43 +373,59 @@ input:focus, select:focus, textarea:focus {
           </select>
         </label>
 
-        <label>Session Window
+        <label>Killzone / Session
           <select id="session">
             <option>—</option>
-            <option>Asia</option>
-            <option>London</option>
-            <option>New York AM</option>
-            <option>New York PM</option>
+            <option>Asian Session</option>
+            <option>London Open KZ</option>
+            <option>NY AM KZ</option>
+            <option>NY PM KZ</option>
+            <option>London Close KZ</option>
             <option>Off-Hours</option>
           </select>
         </label>
 
-        <label class="full">Target Level
-          <input id="targetLevel" type="text" placeholder="e.g. Session High, Unfilled Gap, Equal Highs">
+        <label class="full">Draw on Liquidity (DOL)
+          <input id="targetLevel" type="text" placeholder="e.g. BSL, SSL, PDH, PDL, FVG Target">
+        </label>
+
+        <label class="full">Entry Model / Confluences
+          <div class="chip-grid" id="confluenceGroup">
+            <label class="chip"><input type="checkbox" value="Fair Value Gap (FVG)"> FVG / BISI / SIBI</label>
+            <label class="chip"><input type="checkbox" value="Order Block (OB)"> Order Block (OB)</label>
+            <label class="chip"><input type="checkbox" value="Breaker Block"> Breaker Block</label>
+            <label class="chip"><input type="checkbox" value="Liquidity Void / BPR"> Liquidity Void / BPR</label>
+            <label class="chip"><input type="checkbox" value="Market Structure Shift (MSS)"> MSS / CHoCH</label>
+            <label class="chip"><input type="checkbox" value="Displacement"> Displacement</label>
+            <label class="chip"><input type="checkbox" value="Optimal Trade Entry (OTE)"> OTE (0.62 / 0.705 / 0.79)</label>
+            <label class="chip"><input type="checkbox" value="Judas Swing"> Judas Swing</label>
+            <label class="chip"><input type="checkbox" value="Power of 3 (AMD)"> Power of 3 (AMD)</label>
+            <label class="chip"><input type="checkbox" value="SMT Divergence"> SMT Divergence</label>
+            <label class="chip"><input type="checkbox" value="Premium / Discount"> Premium / Discount Array</label>
+          </div>
         </label>
 
         <label class="full">Liquidity Swept
           <div class="chip-grid" id="liquidityGroup">
-            <label class="chip"><input type="checkbox" value="Buy-side Liquidity"> Buy-side Liquidity</label>
-            <label class="chip"><input type="checkbox" value="Sell-side Liquidity"> Sell-side Liquidity</label>
-            <label class="chip"><input type="checkbox" value="Previous Day High"> Previous Day High</label>
-            <label class="chip"><input type="checkbox" value="Previous Day Low"> Previous Day Low</label>
-            <label class="chip"><input type="checkbox" value="Asian High"> Asian High</label>
-            <label class="chip"><input type="checkbox" value="Asian Low"> Asian Low</label>
-            <label class="chip"><input type="checkbox" value="Equal Highs"> Equal Highs</label>
-            <label class="chip"><input type="checkbox" value="Equal Lows"> Equal Lows</label>
+            <label class="chip"><input type="checkbox" value="Buy-side Liquidity (BSL)"> BSL (Buy-side)</label>
+            <label class="chip"><input type="checkbox" value="Sell-side Liquidity (SSL)"> SSL (Sell-side)</label>
+            <label class="chip"><input type="checkbox" value="Previous Day High (PDH)"> PDH</label>
+            <label class="chip"><input type="checkbox" value="Previous Day Low (PDL)"> PDL</label>
+            <label class="chip"><input type="checkbox" value="Asian High (EQH)"> Asian High</label>
+            <label class="chip"><input type="checkbox" value="Asian Low (EQL)"> Asian Low</label>
+            <label class="chip"><input type="checkbox" value="Equal Highs (EQH)"> Equal Highs (EQH)</label>
+            <label class="chip"><input type="checkbox" value="Equal Lows (EQL)"> Equal Lows (EQL)</label>
           </div>
         </label>
 
-        <label class="full">Invalidation / Miss Factors
+        <label class="full">Invalidation / Risk Factors
           <div class="chip-grid" id="invalidGroup">
-            <label class="chip"><input type="checkbox" value="Against Trend"> Against Trend</label>
-            <label class="chip"><input type="checkbox" value="Early Entry"> Early Entry</label>
-            <label class="chip"><input type="checkbox" value="Early BE"> Early BE</label>
-            <label class="chip"><input type="checkbox" value="Reversal"> Reversal</label>
+            <label class="chip"><input type="checkbox" value="Against HTF Bias"> Against HTF Bias</label>
+            <label class="chip"><input type="checkbox" value="Early Entry (No MSS)"> Early Entry (No MSS)</label>
+            <label class="chip"><input type="checkbox" value="Low Displacement"> Low Displacement</label>
             <label class="chip"><input type="checkbox" value="Engineered Liquidity"> Engineered Liquidity</label>
-            <label class="chip"><input type="checkbox" value="Traded into Resistance"> Traded into Resistance</label>
-            <label class="chip"><input type="checkbox" value="Went to Target"> Went to Target</label>
+            <label class="chip"><input type="checkbox" value="High Impact News Coming"> High Impact News</label>
+            <label class="chip"><input type="checkbox" value="Traded into HTF Array"> Traded into HTF Array</label>
           </div>
         </label>
 
@@ -421,8 +438,8 @@ input:focus, select:focus, textarea:focus {
 
         <div class="full preview-row" id="previewContainer"></div>
 
-        <label class="full">Notes & Thoughts
-          <textarea id="notes" rows="3" placeholder="Setup details, execution quality, mindset..."></textarea>
+        <label class="full">Notes & Psychological Feedback
+          <textarea id="notes" rows="3" placeholder="Execution details, mistakes, mental state..."></textarea>
         </label>
       </div>
     </section>
@@ -468,7 +485,7 @@ input:focus, select:focus, textarea:focus {
       <label>Entry Price <input id="editEntry" type="number" step="any"></label>
       <label>Stop Loss <input id="editSL" type="number" step="any"></label>
       <label>Take Profit <input id="editTP" type="number" step="any"></label>
-      <label class="full">Target Level <input id="editTargetLevel" type="text"></label>
+      <label class="full">Draw on Liquidity <input id="editTargetLevel" type="text"></label>
       <label class="full">Notes <textarea id="editNotes" rows="3"></textarea></label>
     </div>
     <div class="btn-group" style="margin-top:18px;">
@@ -573,6 +590,7 @@ function saveTrade(){
     bias: document.getElementById("bias").value,
     session: document.getElementById("session").value,
     targetLevel: document.getElementById("targetLevel").value.trim(),
+    confluences: getSelectedCheckboxes("confluenceGroup"),
     liquidity: getSelectedCheckboxes("liquidityGroup"),
     invalid: getSelectedCheckboxes("invalidGroup"),
     images: [...currentImages],
@@ -591,6 +609,7 @@ function clearInputs(){
   document.getElementById("targetLevel").value = "";
   document.getElementById("imageUrl").value = "";
   document.getElementById("previewContainer").innerHTML = "";
+  clearCheckboxes("confluenceGroup");
   clearCheckboxes("liquidityGroup");
   clearCheckboxes("invalidGroup");
   currentImages = [];
@@ -633,7 +652,7 @@ function renderJournal(){
   list.innerHTML = [...trades].reverse().map(t => {
     const date = new Date(t.datetime).toLocaleString();
     const imgs = t.images || [];
-    
+
     return `
       <div class="feed-card">
         <div class="feed-header">
@@ -643,10 +662,11 @@ function renderJournal(){
         <div class="feed-body">
           <b>Date:</b> ${date} | <b>R:R:</b> 1:${Number(t.rr).toFixed(2)}<br>
           <b>Entry:</b> ${t.entry} | <b>SL:</b> ${t.sl} | <b>TP:</b> ${t.tp}<br>
-          <b>Bias:</b> ${t.bias} | <b>Session:</b> ${t.session}<br>
-          <b>Target:</b> ${t.targetLevel || '—'}<br>
-          <b>Swept:</b> ${t.liquidity.join(', ') || 'None'}<br>
-          <b>Invalidation:</b> ${t.invalid.join(', ') || 'None'}
+          <b>Bias:</b> ${t.bias} | <b>Killzone:</b> ${t.session}<br>
+          <b>DOL Target:</b> ${t.targetLevel || '—'}<br>
+          <b>Confluences:</b> ${(t.confluences || []).join(', ') || 'None'}<br>
+          <b>Swept:</b> ${(t.liquidity || []).join(', ') || 'None'}<br>
+          <b>Risk Factors:</b> ${(t.invalid || []).join(', ') || 'None'}
           ${t.notes ? `<br><i>Notes: ${t.notes}</i>` : ''}
         </div>
         ${imgs.length > 0 ? `<div class="preview-row">${imgs.map(i => `<a href="${i}" target="_blank"><img src="${i}"></a>`).join('')}</div>` : ''}
@@ -709,7 +729,7 @@ function deleteSingleTrade(id){
 
 function exportCSV(){
   if(trades.length === 0){ alert("No trade records available."); return; }
-  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","bias","session","targetLevel","liquidity","invalid","notes"];
+  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","bias","session","targetLevel","confluences","liquidity","invalid","notes"];
   let csv = columns.join(",") + "\n";
 
   trades.forEach(t => {
