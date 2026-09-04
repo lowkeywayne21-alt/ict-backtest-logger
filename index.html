@@ -3,160 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080a0f">
-<title>TERMINAL // ICT Edge Journal</title>
+<meta name="theme-color" content="#0a0c10">
+<title>LOWKEY JOURNAL</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #06080c;
-  --bg-card: rgba(15, 21, 32, 0.75);
-  --bg-input: #0a0e17;
-  --border-neon: rgba(56, 189, 248, 0.15);
+  --bg-main: #0a0c10;
+  --bg-card: #12151c;
+  --bg-input: #06070a;
+  --border: rgba(255, 255, 255, 0.08);
   --border-focus: #38bdf8;
-  --neon-cyan: #38bdf8;
-  --neon-green: #22c55e;
-  --neon-red: #f43f5e;
-  --neon-amber: #f59e0b;
-  --neon-purple: #a855f7;
-  --text-main: #f8fafc;
-  --text-muted: #64748b;
+  --accent: #38bdf8;
+  --green: #34d399;
+  --red: #f87171;
+  --amber: #fbbf24;
+  --text-main: #f3f4f6;
+  --text-muted: #6b7280;
+  --font-sans: 'Space Grotesk', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-sans); }
 
 body {
-  background: var(--bg-deep);
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.05) 0%, transparent 40%);
+  background: var(--bg-main);
   color: var(--text-main);
   padding-bottom: 60px;
   min-height: 100vh;
 }
 
-/* NAVIGATION */
+/* NAVBAR */
 header {
-  background: rgba(10, 14, 23, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-neon);
+  background: rgba(10, 12, 16, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 14px 24px;
+  padding: 16px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.brand-logo {
+.brand {
   font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 15px;
   letter-spacing: 1px;
   color: var(--text-main);
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
-.brand-logo span {
-  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+.brand span { color: var(--text-muted); }
 
-.nav-pills {
+.nav-tabs {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   background: var(--bg-input);
   padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--border-neon);
+  border-radius: 10px;
+  border: 1px solid var(--border);
 }
 
-.pill-btn {
+.tab-btn {
   background: transparent;
   color: var(--text-muted);
   border: 0;
-  padding: 8px 18px;
+  padding: 8px 16px;
   font-size: 12px;
-  font-weight: 700;
-  border-radius: 8px;
+  font-weight: 600;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   font-family: var(--font-mono);
-  letter-spacing: 0.5px;
 }
 
-.pill-btn.active {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
-  color: var(--neon-cyan);
-  border: 1px solid var(--neon-cyan);
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+.tab-btn.active {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border);
 }
 
 main {
-  max-width: 960px;
-  margin: 24px auto;
+  max-width: 860px;
+  margin: 28px auto;
   padding: 0 16px;
 }
 
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* HUD CARDS */
-.hud-card {
+/* CONTAINERS */
+.panel {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-neon);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
   margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
-.hud-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-}
-
-.hud-title {
+.panel-title {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--neon-cyan);
-  margin-bottom: 18px;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.hud-title::after {
+.panel-title::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(255,255,255,0.05);
+  background: var(--border);
 }
 
-/* FORM GRID */
+/* FORMS */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
 }
 
-.full-width { grid-column: 1 / -1; }
+.full { grid-column: 1 / -1; }
 
 label {
   display: flex;
@@ -164,39 +139,37 @@ label {
   gap: 6px;
   font-size: 11px;
   color: var(--text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
+  font-weight: 600;
   letter-spacing: 0.5px;
 }
 
 input, select, textarea {
   width: 100%;
   background: var(--bg-input);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
   color: var(--text-main);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: 8px;
+  padding: 11px 14px;
   font-size: 13px;
   font-family: var(--font-mono);
   outline: none;
-  transition: all 0.2s ease;
+  transition: border 0.2s ease;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  border-color: var(--accent);
 }
 
 /* CHECKBOX CHIPS */
 .chip-grid {
   background: var(--bg-input);
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 8px;
-  max-height: 160px;
+  max-height: 150px;
   overflow-y: auto;
 }
 
@@ -207,150 +180,140 @@ input:focus, select:focus, textarea:focus {
   font-size: 12px;
   color: var(--text-main);
   cursor: pointer;
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-radius: 6px;
   background: rgba(255,255,255,0.02);
-  transition: background 0.2s;
 }
-
-.chip:hover { background: rgba(56, 189, 248, 0.1); }
 
 .chip input[type="checkbox"] {
-  width: 15px; height: 15px;
-  accent-color: var(--neon-cyan);
+  width: 14px; height: 14px;
+  accent-color: var(--accent);
 }
 
-/* METRIC GAUGES */
-.gauge-row {
+/* METRICS & STATS */
+.metric-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin: 18px 0;
 }
 
-.gauge-box {
-  background: rgba(10, 14, 23, 0.6);
-  border: 1px solid var(--border-neon);
-  border-radius: 12px;
-  padding: 14px;
+.metric-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
   text-align: center;
 }
 
-.gauge-box p { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 4px; }
-.gauge-box h2 { font-size: 22px; font-family: var(--font-mono); font-weight: 800; color: var(--neon-cyan); }
+.metric-card p { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 6px; }
+.metric-card h2 { font-size: 22px; font-family: var(--font-mono); font-weight: 600; color: var(--text-main); }
 
-/* BUTTONS */
-.btn-row { display: flex; gap: 12px; margin-top: 10px; }
-
-.cyber-btn {
-  border: 0;
-  border-radius: 10px;
-  padding: 14px 20px;
-  font-size: 13px;
-  font-family: var(--font-mono);
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex: 1;
-  text-transform: uppercase;
-}
-
-.btn-cyan {
-  background: linear-gradient(135deg, var(--neon-cyan), #0284c7);
-  color: #000;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-}
-
-.btn-cyan:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
-.btn-dark { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid rgba(255,255,255,0.1); }
-.btn-dark:hover { background: rgba(255,255,255,0.1); }
-.btn-red { background: rgba(244, 63, 94, 0.15); color: var(--neon-red); border: 1px solid var(--neon-red); }
-
-/* STONK METRICS MATRIX */
-.matrix-grid {
+.journal-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.matrix-card {
+.stat-box {
   background: var(--bg-card);
-  border: 1px solid var(--border-neon);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
   text-align: center;
 }
 
-.matrix-card span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); display: block; margin-bottom: 6px; }
-.matrix-card h3 { font-size: 20px; font-family: var(--font-mono); font-weight: 800; }
+.stat-box span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); display: block; margin-bottom: 6px; }
+.stat-box h3 { font-size: 18px; font-family: var(--font-mono); font-weight: 600; }
 
-/* TRADE LOG LIST */
-.trade-stream { display: flex; flex-direction: column; gap: 14px; }
+/* BUTTONS */
+.btn-group { display: flex; gap: 10px; margin-top: 12px; }
 
-.log-card {
+.btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.btn-primary { background: var(--text-main); color: var(--bg-main); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary { background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
+.btn-secondary:hover { background: rgba(255,255,255,0.05); }
+.btn-danger { background: rgba(248, 113, 113, 0.1); color: var(--red); border: 1px solid var(--red); }
+
+/* LOG FEED */
+.trade-feed { display: flex; flex-direction: column; gap: 12px; }
+
+.feed-card {
   background: var(--bg-card);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.log-head {
+.feed-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-mono);
+  font-size: 13px;
 }
 
-.pill-badge {
-  padding: 4px 10px;
+.badge {
+  padding: 4px 8px;
   border-radius: 6px;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 600;
   font-family: var(--font-mono);
 }
 
-.badge-WIN { background: rgba(34, 197, 94, 0.15); color: var(--neon-green); border: 1px solid var(--neon-green); }
-.badge-LOSS { background: rgba(244, 63, 94, 0.15); color: var(--neon-red); border: 1px solid var(--neon-red); }
-.badge-BE { background: rgba(56, 189, 248, 0.15); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); }
-.badge-OPEN { background: rgba(245, 158, 11, 0.15); color: var(--neon-amber); border: 1px solid var(--neon-amber); }
+.badge-WIN { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+.badge-LOSS { background: rgba(248, 113, 113, 0.15); color: var(--red); }
+.badge-BE { background: rgba(251, 191, 36, 0.15); color: var(--amber); }
+.badge-OPEN { background: rgba(107, 114, 128, 0.2); color: var(--text-muted); }
 
-.log-data { font-size: 12px; color: #94a3b8; line-height: 1.6; font-family: var(--font-mono); }
-.log-data b { color: var(--text-main); }
+.feed-body { font-size: 12px; color: var(--text-muted); line-height: 1.6; font-family: var(--font-mono); }
+.feed-body b { color: var(--text-main); }
 
-.preview-row { display: flex; gap: 10px; overflow-x: auto; padding-top: 4px; }
-.preview-row img { width: 140px; height: 90px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-neon); }
+.preview-row { display: flex; gap: 8px; overflow-x: auto; padding-top: 4px; }
+.preview-row img { width: 120px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
 
-/* MODALS */
+/* MODAL */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
-.modal-content {
-  background: #0d121f;
-  border: 1px solid var(--neon-cyan);
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 16px;
   width: 90%;
-  max-width: 650px;
+  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
   padding: 24px;
 }
 
 @media(max-width: 600px) {
-  header { flex-direction: column; gap: 12px; }
-  .gauge-row { grid-template-columns: 1fr; }
+  header { flex-direction: column; gap: 10px; }
+  .metric-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -358,10 +321,10 @@ input:focus, select:focus, textarea:focus {
 <body>
 
 <header>
-  <div class="brand-logo">⚡ ICT // <span>TERMINAL V3</span></div>
-  <div class="nav-pills">
-    <button class="pill-btn active" onclick="switchTab('logger')">[1] EXECUTE LOG</button>
-    <button class="pill-btn" onclick="switchTab('journal')">[2] EDGE JOURNAL</button>
+  <div class="brand">lowkey <span>/ journal</span></div>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('logger')">1. Log Setup</button>
+    <button class="tab-btn" onclick="switchTab('journal')">2. Journal</button>
   </div>
 </header>
 
@@ -370,11 +333,11 @@ input:focus, select:focus, textarea:focus {
   <!-- TAB 1: LOGGER -->
   <div id="logger" class="tab-content active">
     
-    <section class="hud-card">
-      <div class="hud-title">// Trade Parameters</div>
+    <section class="panel">
+      <div class="panel-title">Trade Execution</div>
       <div class="form-grid">
         <label>Date & Time <input id="datetime" type="datetime-local"></label>
-        <label>Instrument <input id="symbol" type="text" value="EURUSD"></label>
+        <label>Symbol <input id="symbol" type="text" value="EURUSD"></label>
         <label>Direction 
           <select id="direction">
             <option>BUY</option>
@@ -386,54 +349,50 @@ input:focus, select:focus, textarea:focus {
         <label>Take Profit <input id="tp" type="number" step="any" inputmode="decimal"></label>
       </div>
 
-      <div class="gauge-row">
-        <div class="gauge-box"><p>PLANNED RISK:REWARD</p><h2 id="rrDisplay">—</h2></div>
-        <div class="gauge-box"><p>EXECUTION STATUS</p><h2 id="statusDisplay" style="color:var(--neon-amber);">READY</h2></div>
+      <div class="metric-row">
+        <div class="metric-card"><p>PLANNED R:R</p><h2 id="rrDisplay">—</h2></div>
+        <div class="metric-card"><p>STATUS</p><h2 id="statusDisplay" style="color:var(--amber);">READY</h2></div>
       </div>
 
-      <div class="btn-row">
-        <button class="cyber-btn btn-dark" onclick="calculateRR()">Calculate Risk</button>
-        <button class="cyber-btn btn-cyan" onclick="saveTrade()">Log Setup</button>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="calculateRR()">Calculate Risk</button>
+        <button class="btn btn-primary" onclick="saveTrade()">Save Setup</button>
       </div>
     </section>
 
-    <section class="hud-card">
-      <div class="hud-title">// ICT Engine Context</div>
+    <section class="panel">
+      <div class="panel-title">Context & Attachments</div>
       <div class="form-grid">
-        <label>HTF Bias
-          <select id="htf">
+        <label>Market Bias
+          <select id="bias">
             <option>—</option>
             <option>Bullish</option>
             <option>Bearish</option>
             <option>Neutral</option>
-            <option>Bullish POI</option>
-            <option>Bearish POI</option>
-            <option>Premium</option>
-            <option>Discount</option>
           </select>
         </label>
 
-        <label>Killzone Window
-          <select id="killzone">
+        <label>Session Window
+          <select id="session">
             <option>—</option>
+            <option>Asia</option>
             <option>London</option>
             <option>New York AM</option>
             <option>New York PM</option>
-            <option>Silver Bullet</option>
-            <option>Outside Killzone</option>
+            <option>Off-Hours</option>
           </select>
         </label>
 
-        <label class="full-width">Target Liquidity
-          <input id="targetLiquidity" type="text" placeholder="e.g. Asian High, Buy-side Liquidity, PDH">
+        <label class="full">Target Level
+          <input id="targetLevel" type="text" placeholder="e.g. Session High, Unfilled Gap, Equal Highs">
         </label>
 
-        <label class="full-width">Liquidity Swept
+        <label class="full">Liquidity Swept
           <div class="chip-grid" id="liquidityGroup">
-            <label class="chip"><input type="checkbox" value="BSL"> BSL</label>
-            <label class="chip"><input type="checkbox" value="SSL"> SSL</label>
-            <label class="chip"><input type="checkbox" value="PDH"> PDH</label>
-            <label class="chip"><input type="checkbox" value="PDL"> PDL</label>
+            <label class="chip"><input type="checkbox" value="Buy-side Liquidity"> Buy-side Liquidity</label>
+            <label class="chip"><input type="checkbox" value="Sell-side Liquidity"> Sell-side Liquidity</label>
+            <label class="chip"><input type="checkbox" value="Previous Day High"> Previous Day High</label>
+            <label class="chip"><input type="checkbox" value="Previous Day Low"> Previous Day Low</label>
             <label class="chip"><input type="checkbox" value="Asian High"> Asian High</label>
             <label class="chip"><input type="checkbox" value="Asian Low"> Asian Low</label>
             <label class="chip"><input type="checkbox" value="Equal Highs"> Equal Highs</label>
@@ -441,29 +400,29 @@ input:focus, select:focus, textarea:focus {
           </div>
         </label>
 
-        <label class="full-width">Loss / Invalidation Factors
+        <label class="full">Invalidation / Miss Factors
           <div class="chip-grid" id="invalidGroup">
-            <label class="chip"><input type="checkbox" value="Against HTF trend"> Against HTF trend</label>
-            <label class="chip"><input type="checkbox" value="Early entry"> Early entry</label>
+            <label class="chip"><input type="checkbox" value="Against Trend"> Against Trend</label>
+            <label class="chip"><input type="checkbox" value="Early Entry"> Early Entry</label>
             <label class="chip"><input type="checkbox" value="Early BE"> Early BE</label>
             <label class="chip"><input type="checkbox" value="Reversal"> Reversal</label>
-            <label class="chip"><input type="checkbox" value="Engineered liquidity"> Engineered liquidity</label>
-            <label class="chip"><input type="checkbox" value="Trading to opposing PDA"> Trading to opposing PDA</label>
-            <label class="chip"><input type="checkbox" value="Went to TP"> Went to TP</label>
+            <label class="chip"><input type="checkbox" value="Engineered Liquidity"> Engineered Liquidity</label>
+            <label class="chip"><input type="checkbox" value="Traded into Resistance"> Traded into Resistance</label>
+            <label class="chip"><input type="checkbox" value="Went to Target"> Went to Target</label>
           </div>
         </label>
 
-        <label class="full-width">TradingView Snapshot Link
+        <label class="full">TradingView Link
           <div style="display:flex; gap:8px;">
             <input id="imageUrl" type="text" placeholder="https://www.tradingview.com/x/...">
-            <button class="cyber-btn btn-dark" type="button" style="flex:0 0 120px;" onclick="addUrlImage()">Embed</button>
+            <button class="btn btn-secondary" type="button" style="flex:0 0 100px;" onclick="addUrlImage()">Embed</button>
           </div>
         </label>
 
-        <div class="full-width preview-row" id="previewContainer"></div>
+        <div class="full preview-row" id="previewContainer"></div>
 
-        <label class="full-width">Execution Notes
-          <textarea id="notes" rows="3" placeholder="Market narrative, psychological condition, flaws..."></textarea>
+        <label class="full">Notes & Thoughts
+          <textarea id="notes" rows="3" placeholder="Setup details, execution quality, mindset..."></textarea>
         </label>
       </div>
     </section>
@@ -473,20 +432,20 @@ input:focus, select:focus, textarea:focus {
   <!-- TAB 2: JOURNAL -->
   <div id="journal" class="tab-content">
     
-    <div class="matrix-grid">
-      <div class="matrix-card"><span>TOTAL TRADES</span><h3 id="stTotal">0</h3></div>
-      <div class="matrix-card"><span>NET RR</span><h3 id="stNetRR" style="color:var(--neon-green);">0.00R</h3></div>
-      <div class="matrix-card"><span>WIN RATE</span><h3 id="stWinRate" style="color:var(--neon-cyan);">0%</h3></div>
-      <div class="matrix-card"><span>PROFIT FACTOR</span><h3 id="stProfitFactor">0.00</h3></div>
-      <div class="matrix-card"><span>EXPECTANCY</span><h3 id="stExpectancy">0.00R</h3></div>
+    <div class="journal-stats">
+      <div class="stat-box"><span>TOTAL TRADES</span><h3 id="stTotal">0</h3></div>
+      <div class="stat-box"><span>NET RR</span><h3 id="stNetRR" style="color:var(--green);">0.00R</h3></div>
+      <div class="stat-box"><span>WIN RATE</span><h3 id="stWinRate" style="color:var(--accent);">0%</h3></div>
+      <div class="stat-box"><span>PROFIT FACTOR</span><h3 id="stProfitFactor">0.00</h3></div>
+      <div class="stat-box"><span>EXPECTANCY</span><h3 id="stExpectancy">0.00R</h3></div>
     </div>
 
-    <div class="btn-row" style="margin-bottom: 20px;">
-      <button class="cyber-btn btn-dark" onclick="exportCSV()">Export CSV</button>
-      <button class="cyber-btn btn-red" onclick="deleteAllTrades()">Clear All Records</button>
+    <div class="btn-group" style="margin-bottom: 20px;">
+      <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-danger" onclick="deleteAllTrades()">Clear Records</button>
     </div>
 
-    <div class="trade-stream" id="journalList"></div>
+    <div class="trade-feed" id="journalList"></div>
 
   </div>
 
@@ -494,11 +453,11 @@ input:focus, select:focus, textarea:focus {
 
 <!-- EDIT MODAL -->
 <div class="modal-overlay" id="editModal">
-  <div class="modal-content">
-    <div class="hud-title">// Edit Trade Record</div>
+  <div class="modal">
+    <div class="panel-title">Edit Entry</div>
     <div class="form-grid">
       <input type="hidden" id="editId">
-      <label>Result Outcome
+      <label>Outcome
         <select id="editResult">
           <option value="WIN">WIN</option>
           <option value="LOSS">LOSS</option>
@@ -509,28 +468,28 @@ input:focus, select:focus, textarea:focus {
       <label>Entry Price <input id="editEntry" type="number" step="any"></label>
       <label>Stop Loss <input id="editSL" type="number" step="any"></label>
       <label>Take Profit <input id="editTP" type="number" step="any"></label>
-      <label class="full-width">Target Liquidity <input id="editTargetLiq" type="text"></label>
-      <label class="full-width">Notes <textarea id="editNotes" rows="3"></textarea></label>
+      <label class="full">Target Level <input id="editTargetLevel" type="text"></label>
+      <label class="full">Notes <textarea id="editNotes" rows="3"></textarea></label>
     </div>
-    <div class="btn-row" style="margin-top:18px;">
-      <button class="cyber-btn btn-cyan" onclick="saveEdit()">Update Entry</button>
-      <button class="cyber-btn btn-dark" onclick="closeEditModal()">Cancel</button>
+    <div class="btn-group" style="margin-top:18px;">
+      <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
-let trades = JSON.parse(localStorage.getItem("ICT_BACKTEST_TRADES") || "[]");
+let trades = JSON.parse(localStorage.getItem("LOWKEY_JOURNAL_TRADES") || "[]");
 let currentImages = [];
 
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.pill-btn').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   
   document.getElementById(tabId).classList.add('active');
   event.target.classList.add('active');
 
-  if(tabId === 'journal') renderStonkJournal();
+  if(tabId === 'journal') renderJournal();
 }
 
 function setAutomaticDateTime(){
@@ -590,11 +549,11 @@ function renderPreviews(){
 function saveTrade(){
   const rr = calculateRR();
   if(rr === null){
-    alert("Incomplete price levels detected.");
+    alert("Please fill in Entry, SL, and TP prices.");
     return;
   }
 
-  const resultInput = prompt("Outcome (WIN, LOSS, BE, or blank for OPEN):", "WIN");
+  const resultInput = prompt("Outcome (WIN, LOSS, BE, or leave empty for OPEN):", "WIN");
   let result = "OPEN";
   if(resultInput){
     const clean = resultInput.trim().toUpperCase();
@@ -611,9 +570,9 @@ function saveTrade(){
     tp: parseFloat(document.getElementById("tp").value),
     rr: rr,
     result: result,
-    htf: document.getElementById("htf").value,
-    killzone: document.getElementById("killzone").value,
-    targetLiquidity: document.getElementById("targetLiquidity").value.trim(),
+    bias: document.getElementById("bias").value,
+    session: document.getElementById("session").value,
+    targetLevel: document.getElementById("targetLevel").value.trim(),
     liquidity: getSelectedCheckboxes("liquidityGroup"),
     invalid: getSelectedCheckboxes("invalidGroup"),
     images: [...currentImages],
@@ -621,15 +580,15 @@ function saveTrade(){
   };
 
   trades.push(trade);
-  localStorage.setItem("ICT_BACKTEST_TRADES", JSON.stringify(trades));
+  localStorage.setItem("LOWKEY_JOURNAL_TRADES", JSON.stringify(trades));
   
   clearInputs();
-  alert("Setup recorded to Terminal.");
+  alert("Setup logged.");
 }
 
 function clearInputs(){
   document.getElementById("notes").value = "";
-  document.getElementById("targetLiquidity").value = "";
+  document.getElementById("targetLevel").value = "";
   document.getElementById("imageUrl").value = "";
   document.getElementById("previewContainer").innerHTML = "";
   clearCheckboxes("liquidityGroup");
@@ -637,8 +596,8 @@ function clearInputs(){
   currentImages = [];
 }
 
-/* EDGE METRICS & RENDER */
-function renderStonkJournal(){
+/* METRICS & RENDER */
+function renderJournal(){
   const list = document.getElementById("journalList");
   const total = trades.length;
   
@@ -667,7 +626,7 @@ function renderStonkJournal(){
   document.getElementById("stExpectancy").textContent = `${expectancy}R`;
 
   if(total === 0){
-    list.innerHTML = `<div style="text-align:center; color: var(--text-muted); font-family: var(--font-mono); padding:40px;">// NO TERMINAL RECORDS FOUND</div>`;
+    list.innerHTML = `<div style="text-align:center; color: var(--text-muted); font-family: var(--font-mono); padding:40px;">No trade records logged yet.</div>`;
     return;
   }
 
@@ -676,31 +635,31 @@ function renderStonkJournal(){
     const imgs = t.images || [];
     
     return `
-      <div class="log-card">
-        <div class="log-head">
-          <span>${t.symbol} // ${t.direction}</span>
-          <span class="pill-badge badge-${t.result}">${t.result}</span>
+      <div class="feed-card">
+        <div class="feed-header">
+          <span>${t.symbol} — ${t.direction}</span>
+          <span class="badge badge-${t.result}">${t.result}</span>
         </div>
-        <div class="log-data">
-          <b>DATE:</b> ${date} | <b>EXPECTED R:R:</b> 1:${Number(t.rr).toFixed(2)}<br>
-          <b>ENTRY:</b> ${t.entry} | <b>SL:</b> ${t.sl} | <b>TP:</b> ${t.tp}<br>
-          <b>BIAS:</b> ${t.htf} | <b>KILLZONE:</b> ${t.killzone}<br>
-          <b>TARGET:</b> ${t.targetLiquidity || '—'}<br>
-          <b>SWEPT:</b> ${t.liquidity.join(', ') || 'None'}<br>
-          <b>INVALIDATION:</b> ${t.invalid.join(', ') || 'None'}
-          ${t.notes ? `<br><i>NOTES: ${t.notes}</i>` : ''}
+        <div class="feed-body">
+          <b>Date:</b> ${date} | <b>R:R:</b> 1:${Number(t.rr).toFixed(2)}<br>
+          <b>Entry:</b> ${t.entry} | <b>SL:</b> ${t.sl} | <b>TP:</b> ${t.tp}<br>
+          <b>Bias:</b> ${t.bias} | <b>Session:</b> ${t.session}<br>
+          <b>Target:</b> ${t.targetLevel || '—'}<br>
+          <b>Swept:</b> ${t.liquidity.join(', ') || 'None'}<br>
+          <b>Invalidation:</b> ${t.invalid.join(', ') || 'None'}
+          ${t.notes ? `<br><i>Notes: ${t.notes}</i>` : ''}
         </div>
         ${imgs.length > 0 ? `<div class="preview-row">${imgs.map(i => `<a href="${i}" target="_blank"><img src="${i}"></a>`).join('')}</div>` : ''}
         <div style="display:flex; gap:8px; margin-top:4px;">
-          <button class="cyber-btn btn-dark" style="padding:6px 12px; font-size:11px; flex:0 0 auto;" onclick="openEditModal(${t.id})">Edit Entry</button>
-          <button class="cyber-btn btn-red" style="padding:6px 12px; font-size:11px; flex:0 0 auto;" onclick="deleteSingleTrade(${t.id})">Delete</button>
+          <button class="btn btn-secondary" style="padding:6px 12px; font-size:11px; flex:0 0 auto;" onclick="openEditModal(${t.id})">Edit Entry</button>
+          <button class="btn btn-danger" style="padding:6px 12px; font-size:11px; flex:0 0 auto;" onclick="deleteSingleTrade(${t.id})">Delete</button>
         </div>
       </div>
     `;
   }).join('');
 }
 
-/* MODAL CONTROL */
+/* MODALS */
 function openEditModal(id){
   const t = trades.find(item => item.id === id);
   if(!t) return;
@@ -710,7 +669,7 @@ function openEditModal(id){
   document.getElementById("editEntry").value = t.entry;
   document.getElementById("editSL").value = t.sl;
   document.getElementById("editTP").value = t.tp;
-  document.getElementById("editTargetLiq").value = t.targetLiquidity || "";
+  document.getElementById("editTargetLevel").value = t.targetLevel || "";
   document.getElementById("editNotes").value = t.notes || "";
 
   document.getElementById("editModal").style.display = "flex";
@@ -729,28 +688,28 @@ function saveEdit(){
   trades[index].entry = parseFloat(document.getElementById("editEntry").value);
   trades[index].sl = parseFloat(document.getElementById("editSL").value);
   trades[index].tp = parseFloat(document.getElementById("editTP").value);
-  trades[index].targetLiquidity = document.getElementById("editTargetLiq").value;
+  trades[index].targetLevel = document.getElementById("editTargetLevel").value;
   trades[index].notes = document.getElementById("editNotes").value;
 
   const risk = (trades[index].direction === "BUY") ? (trades[index].entry - trades[index].sl) : (trades[index].sl - trades[index].entry);
   const reward = (trades[index].direction === "BUY") ? (trades[index].tp - trades[index].entry) : (trades[index].entry - trades[index].tp);
   if(risk > 0 && reward > 0) trades[index].rr = reward / risk;
 
-  localStorage.setItem("ICT_BACKTEST_TRADES", JSON.stringify(trades));
+  localStorage.setItem("LOWKEY_JOURNAL_TRADES", JSON.stringify(trades));
   closeEditModal();
-  renderStonkJournal();
+  renderJournal();
 }
 
 function deleteSingleTrade(id){
-  if(!confirm("Purge trade entry?")) return;
+  if(!confirm("Delete this entry?")) return;
   trades = trades.filter(t => t.id !== id);
-  localStorage.setItem("ICT_BACKTEST_TRADES", JSON.stringify(trades));
-  renderStonkJournal();
+  localStorage.setItem("LOWKEY_JOURNAL_TRADES", JSON.stringify(trades));
+  renderJournal();
 }
 
 function exportCSV(){
-  if(trades.length === 0){ alert("No records present."); return; }
-  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","htf","killzone","targetLiquidity","liquidity","invalid","notes"];
+  if(trades.length === 0){ alert("No trade records available."); return; }
+  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","bias","session","targetLevel","liquidity","invalid","notes"];
   let csv = columns.join(",") + "\n";
 
   trades.forEach(t => {
@@ -765,15 +724,15 @@ function exportCSV(){
   const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "ICT_Terminal_Backtest_Data.csv";
+  link.download = "lowkey_journal_backtest_data.csv";
   link.click();
 }
 
 function deleteAllTrades(){
-  if(confirm("Confirm purge of ALL backtest entries?")){
+  if(confirm("Purge ALL saved trade entries?")){
     trades = [];
-    localStorage.setItem("ICT_BACKTEST_TRADES", "[]");
-    renderStonkJournal();
+    localStorage.setItem("LOWKEY_JOURNAL_TRADES", "[]");
+    renderJournal();
   }
 }
 
