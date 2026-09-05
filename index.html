@@ -87,7 +87,7 @@ header {
 }
 
 main {
-  max-width: 860px;
+  max-width: 900px;
   margin: 28px auto;
   padding: 0 16px;
 }
@@ -191,7 +191,7 @@ input:focus, select:focus, textarea:focus {
   accent-color: var(--accent);
 }
 
-/* METRICS & STATS */
+/* METRICS & STATS GRID */
 .metric-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -212,7 +212,7 @@ input:focus, select:focus, textarea:focus {
 
 .journal-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -221,12 +221,82 @@ input:focus, select:focus, textarea:focus {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
   text-align: center;
 }
 
-.stat-box span { font-size: 10px; font-family: var(--font-mono); color: var(--text-muted); display: block; margin-bottom: 6px; }
-.stat-box h3 { font-size: 18px; font-family: var(--font-mono); font-weight: 600; }
+.stat-box span { font-size: 9px; font-family: var(--font-mono); color: var(--text-muted); display: block; margin-bottom: 6px; text-transform: uppercase; }
+.stat-box h3 { font-size: 16px; font-family: var(--font-mono); font-weight: 600; }
+
+/* CALENDAR STYLING */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+}
+
+.calendar-header h3 { font-size: 14px; color: var(--text-main); }
+
+.cal-nav-btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.cal-day-label {
+  text-align: center;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  padding-bottom: 6px;
+  font-weight: 600;
+}
+
+.cal-day {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 72px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cal-day:hover { border-color: var(--accent); }
+.cal-day.empty { background: transparent; border: 0; cursor: default; }
+
+.cal-day-num {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.cal-day-info {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.cal-day-pnl { font-weight: 600; }
+.cal-day-pnl.pos { color: var(--green); }
+.cal-day-pnl.neg { color: var(--red); }
+.cal-day-pnl.zero { color: var(--amber); }
 
 /* BUTTONS */
 .btn-group { display: flex; gap: 10px; margin-top: 12px; }
@@ -315,6 +385,9 @@ input:focus, select:focus, textarea:focus {
 @media(max-width: 600px) {
   header { flex-direction: column; gap: 10px; }
   .metric-row { grid-template-columns: 1fr; }
+  .calendar-grid { gap: 4px; }
+  .cal-day { min-height: 54px; padding: 4px; }
+  .cal-day-info { font-size: 8px; }
 }
 </style>
 </head>
@@ -348,6 +421,7 @@ input:focus, select:focus, textarea:focus {
         <label>Entry Price <input id="entry" type="number" step="any" inputmode="decimal"></label>
         <label>Stop Loss <input id="sl" type="number" step="any" inputmode="decimal"></label>
         <label>Take Profit <input id="tp" type="number" step="any" inputmode="decimal"></label>
+        <label>Profit / Loss ($) <input id="pnlAmount" type="number" step="any" placeholder="e.g. 150 or -50"></label>
       </div>
 
       <div class="metric-row">
@@ -449,16 +523,41 @@ input:focus, select:focus, textarea:focus {
   <!-- TAB 2: JOURNAL -->
   <div id="journal" class="tab-content">
     
+    <!-- STATS OVERVIEW -->
     <div class="journal-stats">
       <div class="stat-box"><span>TOTAL TRADES</span><h3 id="stTotal">0</h3></div>
       <div class="stat-box"><span>NET RR</span><h3 id="stNetRR" style="color:var(--green);">0.00R</h3></div>
+      <div class="stat-box"><span>NET P&L ($)</span><h3 id="stNetUSD" style="color:var(--green);">$0.00</h3></div>
       <div class="stat-box"><span>WIN RATE</span><h3 id="stWinRate" style="color:var(--accent);">0%</h3></div>
       <div class="stat-box"><span>PROFIT FACTOR</span><h3 id="stProfitFactor">0.00</h3></div>
-      <div class="stat-box"><span>EXPECTANCY</span><h3 id="stExpectancy">0.00R</h3></div>
+      <div class="stat-box"><span>DAYS TRADED</span><h3 id="stDaysTraded">0</h3></div>
+      <div class="stat-box"><span>TOP SESSION</span><h3 id="stTopSession" style="font-size:12px; margin-top:2px;">—</h3></div>
+      <div class="stat-box"><span>PEAK HOUR</span><h3 id="stTopHour" style="font-size:12px; margin-top:2px;">—</h3></div>
+      <div class="stat-box"><span>TOP DAY</span><h3 id="stTopDay" style="font-size:12px; margin-top:2px;">—</h3></div>
     </div>
+
+    <!-- CALENDAR PANEL -->
+    <section class="panel">
+      <div class="calendar-header">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">← Prev</button>
+        <h3 id="calMonthTitle">Calendar</h3>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">Next →</button>
+      </div>
+      <div class="calendar-grid">
+        <div class="cal-day-label">SUN</div>
+        <div class="cal-day-label">MON</div>
+        <div class="cal-day-label">TUE</div>
+        <div class="cal-day-label">WED</div>
+        <div class="cal-day-label">THU</div>
+        <div class="cal-day-label">FRI</div>
+        <div class="cal-day-label">SAT</div>
+      </div>
+      <div class="calendar-grid" id="calendarDays" style="margin-top:6px;"></div>
+    </section>
 
     <div class="btn-group" style="margin-bottom: 20px;">
       <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-secondary" onclick="resetFilter()">Reset Date Filter</button>
       <button class="btn btn-danger" onclick="deleteAllTrades()">Clear Records</button>
     </div>
 
@@ -485,6 +584,7 @@ input:focus, select:focus, textarea:focus {
       <label>Entry Price <input id="editEntry" type="number" step="any"></label>
       <label>Stop Loss <input id="editSL" type="number" step="any"></label>
       <label>Take Profit <input id="editTP" type="number" step="any"></label>
+      <label>Profit / Loss ($) <input id="editPnlAmount" type="number" step="any"></label>
       <label class="full">Draw on Liquidity <input id="editTargetLevel" type="text"></label>
       <label class="full">Notes <textarea id="editNotes" rows="3"></textarea></label>
     </div>
@@ -498,6 +598,8 @@ input:focus, select:focus, textarea:focus {
 <script>
 let trades = JSON.parse(localStorage.getItem("LOWKEY_JOURNAL_TRADES") || "[]");
 let currentImages = [];
+let currentCalDate = new Date();
+let activeDateFilter = null;
 
 function switchTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -577,6 +679,8 @@ function saveTrade(){
     if(["WIN", "LOSS", "BE"].includes(clean)) result = clean;
   }
 
+  const pnlVal = parseFloat(document.getElementById("pnlAmount").value);
+
   const trade = {
     id: Date.now(),
     datetime: document.getElementById("datetime").value,
@@ -585,6 +689,7 @@ function saveTrade(){
     entry: parseFloat(document.getElementById("entry").value),
     sl: parseFloat(document.getElementById("sl").value),
     tp: parseFloat(document.getElementById("tp").value),
+    pnl: Number.isFinite(pnlVal) ? pnlVal : 0,
     rr: rr,
     result: result,
     bias: document.getElementById("bias").value,
@@ -607,6 +712,7 @@ function saveTrade(){
 function clearInputs(){
   document.getElementById("notes").value = "";
   document.getElementById("targetLevel").value = "";
+  document.getElementById("pnlAmount").value = "";
   document.getElementById("imageUrl").value = "";
   document.getElementById("previewContainer").innerHTML = "";
   clearCheckboxes("confluenceGroup");
@@ -615,13 +721,23 @@ function clearInputs(){
   currentImages = [];
 }
 
-/* METRICS & RENDER */
+/* METRICS & CALENDAR RENDER */
 function renderJournal(){
-  const list = document.getElementById("journalList");
+  renderMetrics();
+  renderCalendar();
+  renderFeed();
+}
+
+function renderMetrics(){
   const total = trades.length;
-  
   let totalWins = 0, totalLosses = 0;
   let grossWinRR = 0, grossLossRR = 0;
+  let netUSD = 0;
+
+  const sessionMap = {};
+  const hourMap = {};
+  const dayMap = {};
+  const uniqueDates = new Set();
 
   trades.forEach(t => {
     if(t.result === "WIN") {
@@ -631,25 +747,122 @@ function renderJournal(){
       totalLosses++;
       grossLossRR += 1;
     }
+    netUSD += (t.pnl || 0);
+
+    if(t.datetime){
+      const dt = new Date(t.datetime);
+      const dateStr = dt.toISOString().split('T')[0];
+      uniqueDates.add(dateStr);
+
+      const dayName = dt.toLocaleDateString('en-US', { weekday: 'short' });
+      dayMap[dayName] = (dayMap[dayName] || 0) + 1;
+
+      const hourStr = dt.getHours().toString().padStart(2, '0') + ':00';
+      hourMap[hourStr] = (hourMap[hourStr] || 0) + 1;
+    }
+
+    if(t.session && t.session !== "—"){
+      sessionMap[t.session] = (sessionMap[t.session] || 0) + 1;
+    }
   });
 
   const winRate = (totalWins + totalLosses > 0) ? ((totalWins / (totalWins + totalLosses)) * 100).toFixed(1) : 0;
   const netRR = grossWinRR - grossLossRR;
   const profitFactor = (grossLossRR > 0) ? (grossWinRR / grossLossRR).toFixed(2) : grossWinRR.toFixed(2);
-  const expectancy = (totalWins + totalLosses > 0) ? (netRR / (totalWins + totalLosses)).toFixed(2) : 0;
+
+  const getTopKey = (obj) => Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b, "—");
 
   document.getElementById("stTotal").textContent = total;
   document.getElementById("stNetRR").textContent = `${netRR >= 0 ? '+' : ''}${netRR.toFixed(2)}R`;
+  document.getElementById("stNetUSD").textContent = `${netUSD >= 0 ? '+$' : '-$'}${Math.abs(netUSD).toFixed(2)}`;
+  document.getElementById("stNetUSD").style.color = netUSD >= 0 ? 'var(--green)' : 'var(--red)';
   document.getElementById("stWinRate").textContent = `${winRate}%`;
   document.getElementById("stProfitFactor").textContent = profitFactor;
-  document.getElementById("stExpectancy").textContent = `${expectancy}R`;
+  document.getElementById("stDaysTraded").textContent = uniqueDates.size;
+  document.getElementById("stTopSession").textContent = getTopKey(sessionMap);
+  document.getElementById("stTopHour").textContent = getTopKey(hourMap);
+  document.getElementById("stTopDay").textContent = getTopKey(dayMap);
+}
 
-  if(total === 0){
-    list.innerHTML = `<div style="text-align:center; color: var(--text-muted); font-family: var(--font-mono); padding:40px;">No trade records logged yet.</div>`;
+function changeMonth(delta){
+  currentCalDate.setMonth(currentCalDate.getMonth() + delta);
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const year = currentCalDate.getFullYear();
+  const month = currentCalDate.getMonth();
+  
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  document.getElementById("calMonthTitle").textContent = `${monthNames[month]} ${year}`;
+
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const container = document.getElementById("calendarDays");
+  container.innerHTML = "";
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    container.innerHTML += `<div class="cal-day empty"></div>`;
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
+    const dayTrades = trades.filter(t => t.datetime && t.datetime.startsWith(dateKey));
+    
+    let dayPnl = 0;
+    let dayRR = 0;
+    dayTrades.forEach(t => {
+      dayPnl += (t.pnl || 0);
+      if(t.result === "WIN") dayRR += t.rr;
+      if(t.result === "LOSS") dayRR -= 1;
+    });
+
+    let pnlClass = "zero";
+    if (dayPnl > 0) pnlClass = "pos";
+    if (dayPnl < 0) pnlClass = "neg";
+
+    const hasTrades = dayTrades.length > 0;
+
+    container.innerHTML += `
+      <div class="cal-day" onclick="filterByDate('${dateKey}')">
+        <div class="cal-day-num">${day}</div>
+        ${hasTrades ? `
+          <div class="cal-day-info">
+            <div class="cal-day-pnl ${pnlClass}">${dayPnl >= 0 ? '+' : ''}$${dayPnl}</div>
+            <div style="color:var(--text-muted); font-size:8px;">${dayTrades.length} trade${dayTrades.length > 1 ? 's' : ''} (${dayRR >= 0 ? '+' : ''}${dayRR.toFixed(1)}R)</div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+}
+
+function filterByDate(dateKey){
+  activeDateFilter = dateKey;
+  renderFeed();
+}
+
+function resetFilter(){
+  activeDateFilter = null;
+  renderFeed();
+}
+
+function renderFeed(){
+  const list = document.getElementById("journalList");
+  let filtered = [...trades];
+
+  if(activeDateFilter){
+    filtered = filtered.filter(t => t.datetime && t.datetime.startsWith(activeDateFilter));
+  }
+
+  if(filtered.length === 0){
+    list.innerHTML = `<div style="text-align:center; color: var(--text-muted); font-family: var(--font-mono); padding:40px;">${activeDateFilter ? `No trade records logged on ${activeDateFilter}.` : 'No trade records logged yet.'}</div>`;
     return;
   }
 
-  list.innerHTML = [...trades].reverse().map(t => {
+  list.innerHTML = filtered.reverse().map(t => {
     const date = new Date(t.datetime).toLocaleString();
     const imgs = t.images || [];
 
@@ -660,7 +873,7 @@ function renderJournal(){
           <span class="badge badge-${t.result}">${t.result}</span>
         </div>
         <div class="feed-body">
-          <b>Date:</b> ${date} | <b>R:R:</b> 1:${Number(t.rr).toFixed(2)}<br>
+          <b>Date:</b> ${date} | <b>P&L:</b> <span style="color:${(t.pnl || 0) >= 0 ? 'var(--green)' : 'var(--red)'};">${(t.pnl || 0) >= 0 ? '+$' : '-$'}${Math.abs(t.pnl || 0)}</span> | <b>R:R:</b> 1:${Number(t.rr).toFixed(2)}<br>
           <b>Entry:</b> ${t.entry} | <b>SL:</b> ${t.sl} | <b>TP:</b> ${t.tp}<br>
           <b>Bias:</b> ${t.bias} | <b>Killzone:</b> ${t.session}<br>
           <b>DOL Target:</b> ${t.targetLevel || '—'}<br>
@@ -689,6 +902,7 @@ function openEditModal(id){
   document.getElementById("editEntry").value = t.entry;
   document.getElementById("editSL").value = t.sl;
   document.getElementById("editTP").value = t.tp;
+  document.getElementById("editPnlAmount").value = t.pnl || 0;
   document.getElementById("editTargetLevel").value = t.targetLevel || "";
   document.getElementById("editNotes").value = t.notes || "";
 
@@ -708,6 +922,7 @@ function saveEdit(){
   trades[index].entry = parseFloat(document.getElementById("editEntry").value);
   trades[index].sl = parseFloat(document.getElementById("editSL").value);
   trades[index].tp = parseFloat(document.getElementById("editTP").value);
+  trades[index].pnl = parseFloat(document.getElementById("editPnlAmount").value) || 0;
   trades[index].targetLevel = document.getElementById("editTargetLevel").value;
   trades[index].notes = document.getElementById("editNotes").value;
 
@@ -729,7 +944,7 @@ function deleteSingleTrade(id){
 
 function exportCSV(){
   if(trades.length === 0){ alert("No trade records available."); return; }
-  const columns = ["datetime","symbol","direction","entry","sl","tp","rr","result","bias","session","targetLevel","confluences","liquidity","invalid","notes"];
+  const columns = ["datetime","symbol","direction","entry","sl","tp","pnl","rr","result","bias","session","targetLevel","confluences","liquidity","invalid","notes"];
   let csv = columns.join(",") + "\n";
 
   trades.forEach(t => {
