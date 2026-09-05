@@ -639,9 +639,11 @@ function switchTab(tabId) {
 
 function setAutomaticDateTime(){
   const now = new Date();
+  now.setFullYear(2021); // Force the year to automatically default to 2021
   const offset = now.getTimezoneOffset();
   const localTime = new Date(now.getTime() - offset * 60000);
   document.getElementById("datetime").value = localTime.toISOString().slice(0,16);
+  currentCalDate.setFullYear(2021); // Align calendar initial view to 2021
 }
 
 function toggleBE(cb){
@@ -808,6 +810,7 @@ function clearInputs(){
   clearCheckboxes("liquidityGroup");
   clearCheckboxes("invalidGroup");
   currentImages = [];
+  setAutomaticDateTime();
   autoCalculateMain();
 }
 
